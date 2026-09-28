@@ -1,0 +1,34 @@
+QUICK-START GUIDE
+=================
+
+Thank you for your purchase!
+
+WHAT'S IN THIS DOWNLOAD
+ - The blank spreadsheet: use this one for your own numbers
+ - The SAMPLE spreadsheet: filled with example data so you can see how everything works
+
+OPEN IN MICROSOFT EXCEL
+ 1. Double-click the .xlsx file.
+ 2. If you see "Enable Editing" at the top, click it.
+ 3. Start on the "Start Here" tab.
+
+OPEN IN GOOGLE SHEETS (free)
+ 1. Go to drive.google.com and sign in.
+ 2. Click New > File upload and choose the .xlsx file.
+ 3. Right-click the uploaded file > Open with > Google Sheets.
+ 4. Click File > Save as Google Sheets. All formulas, drop-downs and charts carry over.
+
+OPEN IN APPLE NUMBERS
+ Right-click the file > Open With > Numbers.
+
+THE GOLDEN RULE
+ Only type in the YELLOW cells. Everything else calculates on its own.
+
+STARTING A NEW YEAR
+ Save a copy of the file, clear the log tabs, and change the year on the Setup tab.
+
+NEED HELP?
+ Message me through the shop where you bought this. I'm happy to help.
+
+Personal use only. Please don't resell or share the files.
+Figures are estimates for planning and are not financial or tax advice.

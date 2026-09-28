@@ -1,0 +1,3 @@
+products/*.xlsx
+products/*.zip
+__pycache__/

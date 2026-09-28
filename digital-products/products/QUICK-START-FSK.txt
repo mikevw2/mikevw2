@@ -1,0 +1,28 @@
+FOOD SAFETY AUDIT-READINESS KIT: QUICK START
+============================================
+
+IN THIS DOWNLOAD
+ - Food-Safety-Audit-Readiness-Kit.xlsx: blank, ready for your facility
+ - Food-Safety-Audit-Readiness-Kit-SAMPLE.xlsx: a fully worked sample plant, so you can see how everything connects
+
+GET STARTED IN 15 MINUTES
+ 1. Open the blank workbook in Excel, or in Google Sheets (upload to Drive > Open with Google Sheets > File > Save as Google Sheets).
+ 2. Setup tab: enter your facility name and departments, your sanitation frequencies, your VALIDATED CIP limits and your training courses and refresher intervals.
+ 3. Load what you already have: supplier list, sanitation tasks, employees and training dates, open CAPAs.
+ 4. Answer the Audit Readiness self-assessment honestly. Every "No" or "Partial" is your to-do list.
+ 5. Check the Dashboard weekly, or before every management review.
+
+TIPS
+ - Bold columns calculate automatically. Don't type over them.
+ - Filter any Status column (OVERDUE, FAIL, CERT EXPIRED) to get an instant action list.
+ - Keep one workbook per facility. Save a dated copy before each audit as a snapshot.
+ - No macros, so it's safe on locked-down plant computers.
+
+LICENSE
+ One purchase covers use at one facility within your organization. Please don't resell or redistribute the files.
+ For multi-site licensing, message the seller.
+
+IMPORTANT
+ This kit organizes and tracks your food safety program. It does not replace your certification scheme's
+ official code, applicable regulations (e.g. 21 CFR 117) or a qualified PCQI / practitioner.
+ All limits and sample content are examples. Set them to your own validated values.

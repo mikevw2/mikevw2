@@ -74,5 +74,7 @@ pip install openpyxl pillow pymupdf        # plus LibreOffice for the images
 cd digital-products/build
 python3 budget_planner.py ../products
 python3 side_hustle_tracker.py ../products
-python3 listing_images.py ../listing-images
+python3 food_safety_kit.py ../products
+python3 listing_images.py ../listing-images        # consumer product images
+python3 listing_images.py ../listing-images fsk    # food safety kit images
 ```

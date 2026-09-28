@@ -12,6 +12,7 @@ import fitz  # pymupdf
 from PIL import Image, ImageDraw, ImageFont
 
 import budget_planner
+import food_safety_kit
 import side_hustle_tracker
 
 W, H = 2000, 1600
@@ -32,6 +33,18 @@ SHOTS = [
 ]
 
 
+FSK_SHOTS = [
+    (food_safety_kit, "fsk", "Dashboard", "A1:L40", "Your whole food safety program, one dashboard", "Readiness, CAPAs, sanitation, CIP, suppliers, training, EMP"),
+    (food_safety_kit, "fsk", "Hazard Analysis", "A1:Q12", "Hazard analysis with a built-in CCP decision tree", "Risk scoring + Codex decision tree, calculated for you"),
+    (food_safety_kit, "fsk", "CIP Verification", "A1:M26", "CIP records that check themselves", "Every cycle checked against your limits, with the failed parameter named"),
+    (food_safety_kit, "fsk", "Sanitation Schedule", "A1:J16", "Master sanitation schedule on autopilot", "Next due dates and OVERDUE flags, calculated for you"),
+    (food_safety_kit, "fsk", "CAPA Register", "A1:O10", "CAPA register auditors love", "Root cause, owner, due date, days open, overdue flags"),
+    (food_safety_kit, "fsk", "Supplier Approval", "A1:L12", "Never miss an expired supplier cert", "GFSI cert expiry and risk-based review dates"),
+    (food_safety_kit, "fsk", "Training Matrix", "A1:L14", "Training matrix with expiry alerts", "Red = expired, amber = due soon, % current per person"),
+    (food_safety_kit, "fsk", "Audit Readiness", "A1:G32", "Walk into your audit ready", "A 57-point self-assessment across 14 program areas"),
+]
+
+
 def render(module, sheet, area, pdf_dir):
     def hook(wb):
         for ws in wb.worksheets:
@@ -45,6 +58,11 @@ def render(module, sheet, area, pdf_dir):
         ws.page_setup.fitToHeight = 1
         ws.sheet_properties.pageSetUpPr.fitToPage = True
         ws.print_options.gridLines = False
+        if sheet == "Hazard Analysis":  # too wide to read in one image; hide the free-text columns
+            for c in ("D", "I", "J", "K"):
+                ws.column_dimensions[c].hidden = True
+            for r in range(5, 13):
+                ws.row_dimensions[r].height = 22
     xlsx = os.path.join(pdf_dir, f"{sheet.replace(' ', '_')}.xlsx")
     module.build(xlsx, sample=True, year=2026, hook=hook)
     subprocess.run(["soffice", "--headless", "--convert-to", "pdf", "--outdir", pdf_dir, xlsx],
@@ -68,7 +86,10 @@ def render(module, sheet, area, pdf_dir):
 def frame(shot, headline, sub, out):
     img = Image.new("RGB", (W, H), BG)
     d = ImageDraw.Draw(img)
-    d.text((W // 2, 110), headline, font=ImageFont.truetype(FONT, 78), fill=CREAM, anchor="mm")
+    size = 78
+    while d.textlength(headline, font=ImageFont.truetype(FONT, size)) > W - 120:
+        size -= 2
+    d.text((W // 2, 110), headline, font=ImageFont.truetype(FONT, size), fill=CREAM, anchor="mm")
     d.text((W // 2, 200), sub, font=ImageFont.truetype(FONT_R, 44), fill=GOLD, anchor="mm")
     box_w, box_h = W - 160, H - 330
     shot.thumbnail((box_w - 40, box_h - 40), Image.LANCZOS)
@@ -110,6 +131,20 @@ def cover(out, title_lines, bullets, shots):
     img.save(out, optimize=True)
 
 
+def main_fsk(out_dir):
+    os.makedirs(out_dir, exist_ok=True)
+    shots = []
+    with tempfile.TemporaryDirectory() as tmp:
+        for i, (mod, key, sheet, area, head, sub) in enumerate(FSK_SHOTS):
+            img = render(mod, sheet, area, tmp)
+            shots.append(img)
+            frame(img.copy(), head, sub, os.path.join(out_dir, f"fsk-{i + 1:02d}-{sheet.replace(' ', '-').lower()}.png"))
+            print("rendered", sheet)
+    cover(os.path.join(out_dir, "fsk-00-cover.png"), ["Food Safety", "Audit-Readiness Kit"],
+          ["Hazard analysis + CCP tree", "Sanitation & CIP records", "CAPA, suppliers, training", "SQF · BRCGS · FSSC · FSMA"],
+          [shots[0], shots[2], shots[4]])
+
+
 def main(out_dir):
     os.makedirs(out_dir, exist_ok=True)
     shots = {"budget": [], "hustle": []}
@@ -129,4 +164,8 @@ def main(out_dir):
 
 
 if __name__ == "__main__":
-    main(sys.argv[1] if len(sys.argv) > 1 else "../listing-images")
+    out = sys.argv[1] if len(sys.argv) > 1 else "../listing-images"
+    if len(sys.argv) > 2 and sys.argv[2] == "fsk":
+        main_fsk(out)
+    else:
+        main(out)

@@ -1,0 +1,29 @@
+{
+  "manifest_version": 3,
+  "name": "Tailor — the web, fitted to you",
+  "short_name": "Tailor",
+  "version": "0.1.0",
+  "description": "Set your reading, colour, motion and control preferences once. Every website adapts. Your profile is encrypted and never leaves your device.",
+  "permissions": ["storage"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["lib/profile.js", "lib/styles.js", "content.js"],
+      "run_at": "document_start"
+    }
+  ],
+  "action": {
+    "default_title": "Tailor",
+    "default_popup": "popup/popup.html"
+  },
+  "options_ui": {
+    "page": "onboarding/onboarding.html",
+    "open_in_tab": true
+  },
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'none'; connect-src 'none'"
+  }
+}

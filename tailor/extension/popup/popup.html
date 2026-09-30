@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Tailor</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <header>
+    <span class="mark" aria-hidden="true">T</span>
+    <div>
+      <div class="name">Tailor</div>
+      <div class="host" id="host">…</div>
+    </div>
+  </header>
+
+  <section id="ready" hidden>
+    <label class="switch">
+      <input type="checkbox" id="siteToggle">
+      <span>Use my profile on this site</span>
+    </label>
+    <button type="button" id="reader" class="primary">Simplify this page</button>
+  </section>
+
+  <section id="setup" hidden>
+    <p>You haven't set up your profile yet.</p>
+    <button type="button" class="primary open-settings">Set up my profile</button>
+  </section>
+
+  <section id="unsupported" hidden>
+    <p>Browsers don't let extensions change this kind of page (settings pages, the web store, new tabs).</p>
+  </section>
+
+  <footer>
+    <button type="button" class="link open-settings">Edit my profile</button>
+    <span class="lock">🔒 Stored only on this device</span>
+  </footer>
+
+  <script src="../lib/profile.js"></script>
+  <script src="../lib/vault.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>

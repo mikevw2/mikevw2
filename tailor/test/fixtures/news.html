@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Library opens after three years | The Daily Planet</title>
+  <style>
+    body { margin: 0; font: 14px/1.35 "Helvetica Neue", Arial, sans-serif; color: #666; background: #fff; }
+    header { background: #b3131b; color: #fff; padding: 12px 24px; display: flex; gap: 18px; align-items: center; }
+    header .logo { font: 800 22px Georgia, serif; margin-right: auto; }
+    header a { color: #ffd0d3; text-decoration: none; font-size: 13px; }
+    .ticker { background: #fff4c2; color: #6b5200; padding: 6px 24px; font-weight: 700; font-size: 12px; overflow: hidden; white-space: nowrap; }
+    .ticker span { display: inline-block; animation: slide 8s linear infinite; }
+    @keyframes slide { from { transform: translateX(100%); } to { transform: translateX(-100%); } }
+    .wrap { display: grid; grid-template-columns: 1fr 260px; gap: 32px; max-width: 1100px; margin: 0 auto; padding: 24px; }
+    article h1 { font: 700 30px/1.15 Georgia, serif; color: #111; margin: 0 0 8px; }
+    article .byline { color: #999; font-size: 12px; margin-bottom: 16px; }
+    article p { margin: 0 0 12px; }
+    article a { color: #c4161c; text-decoration: none; }
+    aside { border-left: 1px solid #eee; padding-left: 20px; font-size: 12px; }
+    aside .ad { height: 250px; background: repeating-linear-gradient(45deg, #fafafa, #fafafa 10px, #f0f0f0 10px, #f0f0f0 20px); display: grid; place-items: center; color: #bbb; margin-bottom: 16px; }
+    .signup { display: flex; gap: 6px; margin: 16px 0; }
+    .signup input { font-size: 12px; padding: 3px 6px; border: 1px solid #ccc; }
+    .signup button { font-size: 12px; padding: 3px 8px; background: #b3131b; color: #fff; border: 0; }
+    .consent { position: fixed; left: 0; right: 0; bottom: 0; background: #222; color: #eee; padding: 14px 24px; display: flex; justify-content: space-between; align-items: center; z-index: 50; }
+    .consent button { background: #4caf50; color: #fff; border: 0; padding: 8px 14px; }
+    .modal-bg { position: fixed; inset: 0; background: rgba(0,0,0,.55); display: grid; place-items: center; z-index: 60; }
+    .modal { background: #fff; padding: 28px; width: 360px; border-radius: 6px; color: #333; }
+    body.locked { overflow: hidden; }
+  </style>
+</head>
+<body class="locked">
+  <header>
+    <span class="logo">The Daily Planet</span>
+    <nav><a href="#">News</a> <a href="#">Sport</a> <a href="#">Weather</a> <a href="#">Opinion</a></nav>
+  </header>
+  <div class="ticker"><span>BREAKING: Town library opens after three years of construction &bull; Weather: sunny spells</span></div>
+
+  <div class="wrap">
+    <article>
+      <h1>Library opens its doors after three years</h1>
+      <div class="byline">By Staff Reporter &middot; 2 hours ago</div>
+      <video id="promo" autoplay muted loop width="480" height="120" style="background:#000"></video>
+      <p>The new community library opened on Saturday, with shelves for more than 40,000 books, a quiet reading room, and free computers for anyone who needs them. Hundreds of residents queued before the doors opened at nine.</p>
+      <p>Staff said the building was designed with help from local residents, who asked for comfortable seating, good lighting, step-free access, and a children's corner with its own entrance. <a href="https://example.org/hours">See the opening hours</a>.</p>
+      <p>The project ran two years late after problems with the foundations, and cost the council about 20 percent more than planned. Councillors said the delay was frustrating, but that the finished building would serve the town for decades.</p>
+      <h2>What's inside</h2>
+      <ul>
+        <li>A quiet reading room on the first floor</li>
+        <li>Twenty public computers with free printing</li>
+        <li>Bookable rooms for community groups</li>
+      </ul>
+      <p>Membership is free for anyone who lives, works, or studies in the town. You can join online, or bring proof of address to the front desk, and borrow up to fifteen items at a time.</p>
+      <div class="signup"><input placeholder="Email address" aria-label="Email address"><button>Sign up</button> <label><input type="checkbox"> Daily</label></div>
+    </article>
+    <aside>
+      <div class="ad">Advertisement</div>
+      <h3>Most read</h3>
+      <ol><li><a href="#">Council approves new bus route</a></li><li><a href="#">Bakery wins national award</a></li></ol>
+    </aside>
+  </div>
+
+  <div class="consent">We use cookies to personalise content and ads. <button>Accept all</button></div>
+  <div class="modal-bg"><div class="modal"><h2>Don't miss out!</h2><p>Subscribe to our newsletter and get 20% off your first month.</p><button>Subscribe</button></div></div>
+</body>
+</html>

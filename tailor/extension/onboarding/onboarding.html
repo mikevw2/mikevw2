@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tailor — set up your profile</title>
+  <link rel="stylesheet" href="onboarding.css">
+</head>
+<body>
+  <header class="top">
+    <div class="brand"><span class="mark" aria-hidden="true">T</span> Tailor</div>
+    <ol class="steps" aria-label="Setup progress"></ol>
+  </header>
+
+  <main class="layout">
+    <form id="wizard" class="panel" novalidate>
+
+      <section class="step" data-step="welcome" data-title="Welcome">
+        <h1>The web, fitted to you</h1>
+        <p class="lede">Answer a few questions once. From then on, every website you visit adapts to how you like to read, see and use things.</p>
+        <div class="promise">
+          <h2>Your preferences stay on this device</h2>
+          <ul>
+            <li>Your profile is encrypted and stored only in this browser.</li>
+            <li>It is never sent to websites, to us, or to anyone else. There is no Tailor server.</li>
+            <li>You can switch Tailor off for any site, or delete everything in one click.</li>
+          </ul>
+        </div>
+        <fieldset>
+          <legend>Want a head start?</legend>
+          <p class="hint">Pick a starting point. You can change every setting on the next screens.</p>
+          <div class="choices" id="presets"></div>
+        </fieldset>
+      </section>
+
+      <section class="step" data-step="reading" data-title="Reading" hidden>
+        <h1>Reading</h1>
+        <fieldset>
+          <legend>How big should things be?</legend>
+          <div class="choices" data-field="size" data-type="number">
+            <label><input type="radio" name="size" value="100"> As designed</label>
+            <label><input type="radio" name="size" value="115"> A bit bigger</label>
+            <label><input type="radio" name="size" value="130"> Bigger</label>
+            <label><input type="radio" name="size" value="150"> Much bigger</label>
+            <label><input type="radio" name="size" value="175"> Very large</label>
+            <label><input type="radio" name="size" value="200"> Double</label>
+          </div>
+        </fieldset>
+        <fieldset>
+          <legend>Which kind of lettering is easiest for you?</legend>
+          <div class="choices" data-field="font">
+            <label><input type="radio" name="font" value="default"> Whatever the site uses</label>
+            <label><input type="radio" name="font" value="readable"> <span style="font-family: Verdana, sans-serif">Extra clear</span></label>
+            <label><input type="radio" name="font" value="dyslexic"> <span style="font-family: 'OpenDyslexic', 'Comic Sans MS', Verdana, sans-serif">Dyslexia-friendly</span></label>
+            <label><input type="radio" name="font" value="serif"> <span style="font-family: Georgia, serif">Classic book style</span></label>
+          </div>
+          <p class="hint">For the best result install the free <a href="https://www.brailleinstitute.org/freefont/" target="_blank" rel="noopener">Atkinson Hyperlegible</a> or <a href="https://opendyslexic.org/" target="_blank" rel="noopener">OpenDyslexic</a> fonts. Tailor uses them if they're on your computer.</p>
+        </fieldset>
+        <fieldset>
+          <legend>How much space between lines and letters?</legend>
+          <div class="choices" data-field="spacing">
+            <label><input type="radio" name="spacing" value="default"> As designed</label>
+            <label><input type="radio" name="spacing" value="comfortable"> Comfortable</label>
+            <label><input type="radio" name="spacing" value="extra"> Extra roomy</label>
+          </div>
+        </fieldset>
+        <fieldset>
+          <legend>Long lines of text</legend>
+          <div class="choices" data-field="lineWidth">
+            <label><input type="radio" name="lineWidth" value="default"> Leave as is</label>
+            <label><input type="radio" name="lineWidth" value="narrow"> Keep lines short so I don't lose my place</label>
+          </div>
+        </fieldset>
+      </section>
+
+      <section class="step" data-step="colour" data-title="Colour" hidden>
+        <h1>Colour and light</h1>
+        <fieldset>
+          <legend>What should pages look like?</legend>
+          <div class="choices swatches" data-field="theme">
+            <label><input type="radio" name="theme" value="default"> <span class="sw sw-default" aria-hidden="true"></span> As designed</label>
+            <label><input type="radio" name="theme" value="dark"> <span class="sw sw-dark" aria-hidden="true"></span> Dark</label>
+            <label><input type="radio" name="theme" value="sepia"> <span class="sw sw-sepia" aria-hidden="true"></span> Warm paper</label>
+            <label><input type="radio" name="theme" value="light-contrast"> <span class="sw sw-lc" aria-hidden="true"></span> High contrast, light</label>
+            <label><input type="radio" name="theme" value="dark-contrast"> <span class="sw sw-dc" aria-hidden="true"></span> High contrast, dark</label>
+          </div>
+        </fieldset>
+        <fieldset>
+          <legend>Links</legend>
+          <label class="toggle"><input type="checkbox" name="underlineLinks"> Always underline links, so I don't have to rely on colour to spot them</label>
+        </fieldset>
+      </section>
+
+      <section class="step" data-step="calm" data-title="Calm" hidden>
+        <h1>Motion and distractions</h1>
+        <fieldset>
+          <legend>Turn off anything you'd rather not see</legend>
+          <label class="toggle"><input type="checkbox" name="reduceMotion"> Stop animations, sliding and flashing effects</label>
+          <label class="toggle"><input type="checkbox" name="stopAutoplay"> Don't let videos or sound play until I press play</label>
+          <label class="toggle"><input type="checkbox" name="hidePopups"> Hide cookie banners, newsletter pop-ups and overlays</label>
+        </fieldset>
+        <p class="hint">Hiding a cookie banner doesn't accept cookies. It just gets it out of your way.</p>
+      </section>
+
+      <section class="step" data-step="controls" data-title="Controls" hidden>
+        <h1>Buttons and controls</h1>
+        <fieldset>
+          <legend>Make things easier to use</legend>
+          <label class="toggle"><input type="checkbox" name="bigTargets"> Make buttons, boxes and checkboxes bigger and easier to hit</label>
+          <label class="toggle"><input type="checkbox" name="strongFocus"> Show a bold outline around whatever I've selected with the keyboard</label>
+        </fieldset>
+      </section>
+
+      <section class="step" data-step="done" data-title="Done" hidden>
+        <h1>You're all set</h1>
+        <p class="lede">Every website you open will now follow your profile.</p>
+        <ul class="tips">
+          <li>Click the Tailor button in your toolbar to switch it off for a site, or to open a simplified version of a page.</li>
+          <li>Come back here at any time to change your choices. Open this page from the toolbar button or from your browser's extension settings.</li>
+          <li>Pages that are already open need a refresh the first time.</li>
+        </ul>
+        <details class="data">
+          <summary>Your data</summary>
+          <p>Your profile is encrypted with a key created on this device. The key can't be copied out of the browser by any script, including Tailor's own.</p>
+          <div class="row">
+            <button type="button" id="export" class="secondary">Download a copy of my profile</button>
+            <label class="secondary file">Load a profile from a file <input type="file" id="import" accept="application/json,.json"></label>
+            <button type="button" id="wipe" class="danger">Delete everything</button>
+          </div>
+          <p class="hint">A downloaded copy isn't encrypted, so keep it somewhere private.</p>
+        </details>
+      </section>
+
+      <p class="status" role="status" aria-live="polite"></p>
+
+      <nav class="nav">
+        <button type="button" id="back" class="secondary">Back</button>
+        <button type="button" id="next" class="primary">Next</button>
+      </nav>
+    </form>
+
+    <aside class="preview-panel" aria-label="Live preview">
+      <p class="preview-label">Live preview</p>
+      <div class="tailor-preview">
+        <div class="pv-page">
+          <div class="pv-nav"><span class="pv-logo">Daily Planet</span><a href="#" tabindex="-1">News</a><a href="#" tabindex="-1">Sport</a><a href="#" tabindex="-1">Weather</a></div>
+          <div class="pv-hero"><span class="pv-spin" aria-hidden="true"></span><span>Breaking: town opens new library</span></div>
+          <h2>Library opens its doors after three years</h2>
+          <p>The new community library opened on Saturday, with shelves for more than 40,000 books, a quiet reading room and free computers for anyone who needs them. <a href="#" tabindex="-1">Read the full story</a>, or see <a href="#" tabindex="-1">opening hours</a>.</p>
+          <p>Staff said the building was designed with help from local residents, who asked for comfortable seating, good lighting and a children's corner.</p>
+          <div class="pv-form"><input type="text" placeholder="Your email" tabindex="-1" aria-label="Sample email box"><button type="button" tabindex="-1">Sign up</button> <label><input type="checkbox" tabindex="-1"> Weekly</label></div>
+          <div class="cookie-banner">We use cookies to improve your experience. <button type="button" tabindex="-1">Accept all</button></div>
+        </div>
+      </div>
+    </aside>
+  </main>
+
+  <script src="../lib/profile.js"></script>
+  <script src="../lib/styles.js"></script>
+  <script src="../lib/vault.js"></script>
+  <script src="onboarding.js"></script>
+</body>
+</html>

@@ -15,6 +15,12 @@
   <main class="layout">
     <form id="wizard" class="panel" novalidate>
 
+      <section class="locked-banner" id="lockedBanner" hidden>
+        <h1>Unlock your profile</h1>
+        <p class="lede">Your profile is protected by a passkey. Use your fingerprint, face, PIN or security key to unlock it.</p>
+        <button type="button" id="unlockHere" class="primary">Unlock with passkey</button>
+      </section>
+
       <section class="step" data-step="welcome" data-title="Welcome">
         <h1>The web, fitted to you</h1>
         <p class="lede">Answer a few questions once. From then on, every website you visit adapts to how you like to read, see and use things.</p>
@@ -119,6 +125,19 @@
           <li>Come back here at any time to change your choices. Open this page from the toolbar button or from your browser's extension settings.</li>
           <li>Pages that are already open need a refresh the first time.</li>
         </ul>
+        <fieldset class="protect">
+          <legend>Extra protection (optional)</legend>
+          <p>Lock your profile with a passkey: your fingerprint, face, PIN or a security key. The secret that unlocks it stays inside your device's security chip, so even someone who copies your computer's files can't read your profile.</p>
+          <ul class="hint">
+            <li>You'll unlock once each time you open your browser. Until then, websites look the way they normally do.</li>
+            <li>If you lose the passkey, nobody can recover the profile, not even us. You would set it up again.</li>
+          </ul>
+          <p class="protect-state" id="protectState"></p>
+          <div class="row">
+            <button type="button" id="protectOn" class="primary">Protect with a passkey</button>
+            <button type="button" id="protectOff" class="secondary" hidden>Turn off passkey protection</button>
+          </div>
+        </fieldset>
         <details class="data">
           <summary>Your data</summary>
           <p>Your profile is encrypted with a key created on this device. The key can't be copied out of the browser by any script, including Tailor's own.</p>
@@ -158,6 +177,7 @@
   <script src="../lib/profile.js"></script>
   <script src="../lib/styles.js"></script>
   <script src="../lib/vault.js"></script>
+  <script src="../lib/passkey.js"></script>
   <script src="onboarding.js"></script>
 </body>
 </html>

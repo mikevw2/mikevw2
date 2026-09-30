@@ -206,6 +206,99 @@ const ok = (msg) => console.log(`  ✓ ${msg}`);
     await page.waitForSelector('#tailor-reader-host', { state: 'detached' });
     ok('Escape returns to the original page');
 
+    step('Passkey protection (hardware-bound key)');
+    // A virtual authenticator stands in for Touch ID / Windows Hello: it
+    // checks "user verification" and computes PRF secrets like real hardware.
+    await onboarding.bringToFront();
+    const cdp = await ctx.newCDPSession(onboarding);
+    await cdp.send('WebAuthn.enable');
+    await cdp.send('WebAuthn.addVirtualAuthenticator', {
+      options: {
+        protocol: 'ctap2', ctap2Version: 'ctap2_1', transport: 'internal', hasResidentKey: true,
+        hasUserVerification: true, isUserVerified: true, hasPrf: true, automaticPresenceSimulation: true,
+      },
+    });
+    const before = await worker.evaluate(() => chrome.storage.local.get('vault'));
+    await onboarding.waitForSelector('#protectOn:not([hidden])');
+    await onboarding.screenshot({ path: path.join(SHOTS, '9-passkey-offer.png'), fullPage: true });
+    await onboarding.click('#protectOn');
+    await onboarding.waitForFunction(() => document.getElementById('protectState').textContent.startsWith('On'));
+    ok('passkey created and protection switched on');
+
+    const pk = await worker.evaluate(async () => {
+      const local = await chrome.storage.local.get(null);
+      const session = await chrome.storage.session.get(null);
+      const db = await new Promise((r) => { const q = indexedDB.open('tailor-keys'); q.onsuccess = () => r(q.result); });
+      const idbKey = await new Promise((r) => { const q = db.transaction('keys').objectStore('keys').get('vault-key'); q.onsuccess = () => r(q.result); });
+      return { local, session, idbKey: idbKey || null, data: await TailorVault.load() };
+    });
+    assert.ok(pk.local.passkey && pk.local.passkey.wrapped && pk.local.passkey.credentialId, 'passkey record stored');
+    assert.equal(pk.idbKey, null, 'old device key destroyed');
+    assert.ok(pk.session.dek, 'unlocked key held in session memory');
+    assert.ok(!JSON.stringify(pk.local).includes(pk.session.dek), 'raw data key never written to disk');
+    assert.notEqual(pk.local.vault.ct, before.vault.ct, 're-encrypted under the new key');
+    assert.equal(pk.data.profile.theme, 'dark-contrast');
+    ok('data re-encrypted; only the wrapped key is on disk; old key destroyed');
+    await page.bringToFront();
+    await page.waitForSelector('#tailor-style', { state: 'attached' });
+    ok('websites still adapt while unlocked');
+
+    // Closing the browser clears session storage. Simulate that.
+    await worker.evaluate(() => chrome.storage.session.clear());
+    await page.waitForSelector('#tailor-style', { state: 'detached' });
+    const locked = await worker.evaluate(async () => ({
+      data: await TailorVault.load(),
+      badge: await chrome.action.getBadgeText({}),
+    }));
+    assert.equal(locked.data.locked, true);
+    assert.equal(locked.data.profile, null);
+    assert.equal(locked.badge, '!');
+    ok('after a browser restart the profile is locked and unreadable; sites show normally; toolbar shows "!"');
+    // The earlier popup closed itself after "Simplify this page".
+    const lockedPopup = await ctx.newPage();
+    await lockedPopup.setViewportSize({ width: 300, height: 220 });
+    await lockedPopup.goto(`chrome-extension://${extId}/popup/popup.html?tabId=${tabId}`);
+    await lockedPopup.waitForSelector('#locked:not([hidden])');
+    await lockedPopup.screenshot({ path: path.join(SHOTS, '10-popup-locked.png') });
+    await lockedPopup.close();
+    ok('popup offers to unlock');
+    const unlockPage = await ctx.newPage();
+    await unlockPage.goto(`chrome-extension://${extId}/unlock/unlock.html`);
+    await unlockPage.waitForSelector('#unlock:not([hidden])');
+    await unlockPage.screenshot({ path: path.join(SHOTS, '11-unlock.png') });
+    await unlockPage.close();
+
+    await onboarding.bringToFront();
+    await onboarding.reload();
+    await onboarding.waitForSelector('#lockedBanner:not([hidden])');
+    await onboarding.click('#unlockHere');
+    await onboarding.waitForSelector('[data-step]:not([hidden])');
+    const unlocked = await worker.evaluate(async () => ({
+      data: await TailorVault.load(),
+      badge: await chrome.action.getBadgeText({}),
+    }));
+    assert.equal(unlocked.data.locked, false);
+    assert.equal(unlocked.data.profile.size, 130);
+    assert.equal(unlocked.badge, '');
+    await page.waitForSelector('#tailor-style', { state: 'attached' });
+    ok('unlocking with the passkey restores the profile and re-adapts open sites');
+
+    // Turn protection back off.
+    await onboarding.evaluate(() => { location.hash = '#done'; location.reload(); });
+    await onboarding.waitForSelector('#protectOff:not([hidden])');
+    onboarding.once('dialog', (d) => d.accept());
+    await onboarding.click('#protectOff');
+    await onboarding.waitForFunction(() => document.getElementById('protectState').textContent.startsWith('Off'));
+    const offState = await worker.evaluate(async () => ({
+      local: await chrome.storage.local.get(null),
+      session: await chrome.storage.session.get(null),
+      data: await TailorVault.load(),
+    }));
+    assert.equal(offState.local.passkey, undefined);
+    assert.equal(offState.session.dek, undefined);
+    assert.equal(offState.data.profile.theme, 'dark-contrast');
+    ok('turning protection off returns to an automatic device key with data intact');
+
     step('Delete everything');
     await onboarding.bringToFront();
     onboarding.once('dialog', (d) => d.accept());

@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Unlock Tailor</title>
+  <link rel="stylesheet" href="../onboarding/onboarding.css">
+  <style>
+    .unlock { max-width: 520px; margin: 10vh auto 0; padding: 0 16px; }
+    .unlock .panel { text-align: center; }
+    .unlock .big { font-size: 19px; padding: 14px 28px; min-height: 56px; }
+    .unlock .status { margin-top: 16px; }
+    .unlock .status.error { color: var(--danger); }
+  </style>
+</head>
+<body>
+  <main class="unlock">
+    <div class="panel">
+      <div class="brand" style="justify-content: center; margin-bottom: 16px;"><span class="mark" aria-hidden="true">T</span> Tailor</div>
+      <h1>Unlock your profile</h1>
+      <p class="lede">Your profile is protected by a passkey. Use your fingerprint, face, PIN or security key to unlock it for this browser session.</p>
+      <button type="button" id="unlock" class="primary big">Unlock with passkey</button>
+      <p class="status" role="status" aria-live="polite"></p>
+      <p class="hint">Until you unlock, websites look the way they normally do.</p>
+    </div>
+  </main>
+  <script src="../lib/profile.js"></script>
+  <script src="../lib/vault.js"></script>
+  <script src="../lib/passkey.js"></script>
+  <script src="unlock.js"></script>
+</body>
+</html>

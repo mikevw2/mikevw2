@@ -428,6 +428,7 @@
       if (chrome.runtime.lastError || !res) return;
       profile = res.profile;
       siteOff = res.off;
+      if (!profile) closeReader();
       applyAll();
     });
   }
@@ -442,7 +443,9 @@
 
   chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     if (!msg || typeof msg.type !== 'string') return false;
-    if (msg.type === 'tailor:status') {
+    if (msg.type === 'tailor:refresh') {
+      refresh();
+    } else if (msg.type === 'tailor:status') {
       sendResponse({ host, hasProfile: Boolean(profile), off: siteOff, readerOpen: Boolean(readerHost) });
     } else if (msg.type === 'tailor:reader') {
       if (!profile) {

@@ -115,7 +115,7 @@
       say('Saved on this device.');
     } catch (err) {
       console.error(err);
-      say('Could not save. Please try again.');
+      say(err instanceof TailorVault.LockedError ? 'Your profile is locked. Reload this page to unlock it.' : 'Could not save. Please try again.');
     }
   }
 
@@ -149,15 +149,85 @@
     await TailorVault.wipe();
     profile = { ...DEFAULT_PROFILE };
     render();
-    say('Everything has been deleted. Websites are back to normal.');
+    await renderProtection();
+    say('Everything has been deleted. Websites are back to normal. If you used a passkey, you can also remove "Tailor profile" from your passkey manager.');
   });
+
+  // ---- Passkey protection ------------------------------------------------------------
+
+  const protectState = document.getElementById('protectState');
+  const protectOn = document.getElementById('protectOn');
+  const protectOff = document.getElementById('protectOff');
+
+  async function renderProtection() {
+    const { mode } = await TailorVault.status();
+    const on = mode === 'passkey';
+    protectState.textContent = on
+      ? 'On: your profile is locked with a passkey.'
+      : 'Off: your profile unlocks automatically on this device.';
+    protectState.classList.toggle('on', on);
+    protectOn.hidden = on || !TailorPasskey.isSupported();
+    protectOff.hidden = !on;
+  }
+
+  protectOn.addEventListener('click', async () => {
+    protectOn.disabled = true;
+    try {
+      await saveNow();
+      say('Follow your browser\'s prompt to create a passkey…');
+      await TailorPasskey.enable();
+      say('Passkey protection is on.');
+    } catch (err) {
+      say(err.message);
+    }
+    protectOn.disabled = false;
+    await renderProtection();
+  });
+
+  protectOff.addEventListener('click', async () => {
+    if (!confirm('Turn off passkey protection? Your profile will unlock automatically on this device again.')) return;
+    try {
+      await TailorVault.disablePasskey();
+      say('Passkey protection is off. You can remove "Tailor profile" from your passkey manager.');
+    } catch (err) {
+      say(err instanceof TailorVault.LockedError ? 'Unlock your profile first.' : err.message);
+    }
+    await renderProtection();
+  });
+
+  // ---- Locked --------------------------------------------------------------------------
+
+  function showLocked() {
+    steps.forEach((s) => { s.hidden = true; });
+    document.querySelector('.nav').hidden = true;
+    stepList.hidden = true;
+    document.getElementById('lockedBanner').hidden = false;
+    const btn = document.getElementById('unlockHere');
+    btn.focus();
+    btn.addEventListener('click', async () => {
+      btn.disabled = true;
+      say('Waiting for your passkey…');
+      try {
+        await TailorPasskey.unlock();
+        location.reload();
+      } catch (err) {
+        say(err.message);
+        btn.disabled = false;
+      }
+    });
+  }
 
   // ---- Start ------------------------------------------------------------------------
 
   (async () => {
     const data = await TailorVault.load();
+    if (data.locked) {
+      showLocked();
+      return;
+    }
     if (data.profile) profile = data.profile;
     render();
+    await renderProtection();
     const fromHash = steps.findIndex((s) => `#${s.dataset.step}` === location.hash);
     showStep(fromHash >= 0 ? fromHash : 0);
   })();

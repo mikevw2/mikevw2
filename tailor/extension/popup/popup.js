@@ -7,6 +7,25 @@
   document.querySelectorAll('.open-settings').forEach((b) =>
     b.addEventListener('click', () => { chrome.runtime.openOptionsPage(); window.close(); }));
 
+  const vault = await TailorVault.status();
+  if (vault.locked) {
+    $('host').textContent = 'Locked';
+    show('locked');
+    $('unlock').addEventListener('click', () => {
+      chrome.tabs.create({ url: chrome.runtime.getURL('unlock/unlock.html') });
+      window.close();
+    });
+    return;
+  }
+  if (vault.mode === 'passkey') {
+    show('lockNow');
+    $('storedNote').hidden = true;
+    $('lockNow').addEventListener('click', async () => {
+      await TailorVault.lock();
+      window.close();
+    });
+  }
+
   // ?tabId= lets the popup be opened as a normal page (used by the tests).
   const param = new URLSearchParams(location.search).get('tabId');
   const tabId = param ? Number(param) : (await chrome.tabs.query({ active: true, currentWindow: true }))[0]?.id;

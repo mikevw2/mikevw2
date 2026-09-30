@@ -1,7 +1,13 @@
 # Food Safety Audit-Readiness Kit: launch pack
 
-**Upload file:** `products/Food-Safety-Audit-Readiness-Kit.zip` (blank workbook, sample workbook and quick-start guide)
-**Images:** `listing-images/fsk-00-cover.png`, then `fsk-01` → `fsk-08`
+There are two tiers, sold as two Gumroad products (or one product with two versions):
+
+| Tier | Upload file | Images |
+|---|---|---|
+| **Standard**: 11 tabs | `products/Food-Safety-Audit-Readiness-Kit.zip` | `fsk-00-cover.png`, then `fsk-01` → `fsk-08` |
+| **PRO**: 17 tabs | `products/Food-Safety-Audit-Readiness-Kit-PRO.zip` | `pro-00-cover.png`, `pro-01` → `pro-05`, then `fsk-02` → `fsk-08` |
+
+Each zip holds a blank workbook, a fully worked sample workbook and a quick-start guide.
 
 ## Before you sell: your 30-minute expert review
 
@@ -11,14 +17,20 @@ You're the credibility behind this product, so check these points first:
 - [ ] **CCP-PC Plan (samples):** 161°F / 15 s HTST and the metal-detector test-piece sizes read correctly to you.
 - [ ] **Setup → CIP limits:** the defaults (caustic 1.0–2.5 % at ≥ 160°F for ≥ 10 min, acid 0.5–1.5 %, sanitizer 150–200 ppm) are sensible placeholders. The kit tells buyers to replace them with their own validated values.
 - [ ] **Audit Readiness:** the 57 checklist items. They're written in plain language, not copied from any scheme's code, so there are no copyright issues. Add or reword anything you'd expect an auditor to ask.
+- [ ] **PRO: Allergen Matrix:** the 9 major US allergens, including sesame. The "Contains" and "Shared line" statements are planning aids; label wording still follows your regulatory review.
+- [ ] **PRO: Mock Recall targets:** the defaults are 4 hours, 100 % accounted for, and every 12 months. Many customers and schemes expect a tighter time target, so pick a default you'd stand behind.
+- [ ] **PRO: Pest thresholds:** the defaults per device type per month are rodent 2, bait station 1, insect light trap 20 and pheromone 5. They're placeholders for buyers to set with their pest control provider.
 - [ ] **Your employer:** make sure your employment agreement allows a side business, and that nothing in the kit comes from your employer's documents. Everything I wrote is generic.
 
 ## Pricing
 
 | Where | Launch price | Regular price | Why |
 |---|---|---|---|
-| **Gumroad** (primary) | $79 | $129 | B2B buyers expense it. Consultants charge $1,000s for the same organization. |
-| Etsy (secondary) | $59 | $89 | Etsy buyers skew toward small businesses |
+| **Gumroad: Standard** | $79 | $129 | B2B buyers expense it. Consultants charge $1,000s for the same organization. |
+| **Gumroad: PRO** | $149 | $229 | About 1.7× Standard for 6 more tools. Most buyers compare the two and take PRO. |
+| Etsy: Standard only | $59 | $89 | Etsy buyers skew toward small businesses. Keep PRO on Gumroad. |
+
+**Upgrade path:** send Standard buyers a $70 upgrade code for PRO (a Gumroad discount code) a few weeks after they buy.
 
 Optional upsell, once people are buying: **"Set up for your plant"** at $300–$750. You tailor the limits, hazards and checklist to the buyer's facility over one or two calls.
 
@@ -55,6 +67,19 @@ Built by a food-manufacturing operations lead with years on regulated dairy floo
 
 **Please note:** this kit organizes and tracks your program. It does not replace your certification scheme's official code, FDA regulations or a qualified PCQI / practitioner. Set every limit to your own validated values. SQF, BRCGS, FSSC 22000 and IFS are trademarks of their owners; this product is not affiliated with or endorsed by them.
 
+## PRO add-on copy (paste below the Standard description on the PRO product)
+
+**Name:** Food Safety Audit-Readiness Kit PRO: Complete Food Safety Program Workbook
+
+**PRO includes everything above, plus 6 more connected tools:**
+- **Mock recall & traceability:** time to complete and % of product accounted for, scored PASS / FAIL against your targets, with days since the last exercise on the dashboard
+- **Allergen matrix:** products × the 9 major US allergens (including sesame). It builds "Contains" and shared-line statements and a line allergen profile, and flags labels due for re-verification.
+- **Glass & brittle-plastic register:** inspection schedule by item and location, with DAMAGED and OVERDUE flags
+- **Pest trend analysis:** log pest control service findings and get a 12-month trend by device type, with months over your action threshold turned red and a chart ready for the auditor
+- **Calibration log:** thermometers, scales, pH meters, metal detectors and gauges, with due dates and failed calibrations flagged
+- **Internal audit schedule:** every program area pre-listed, with coverage % for the last 12 months
+- **20-indicator dashboard:** 10 more live tiles and an action list covering all 17 tabs
+
 ## Etsy extras
 
 **Title (≤ 140):**
@@ -87,6 +112,13 @@ Post one a week. Replace [link] with your Gumroad link.
 > I track all three with automatic red flags. Screenshot below. Template in the comments.
 
 (Attach `fsk-01-dashboard.png`.)
+
+**Post 4: PRO launch (about week 3)**
+> "When was your last mock recall, and how long did it take?" is one of the first questions in almost every audit.
+>
+> The PRO version of my food safety workbook now tracks mock recalls (time and % accounted, scored PASS/FAIL), an allergen matrix that writes its own statements, the glass register, pest trends with action thresholds, calibration and the internal audit schedule. 17 connected tabs on one dashboard. [link]
+
+(Attach `pro-01-dashboard.png`.)
 
 **Post 3: the CCP decision tree**
 > Is it a CCP? The Codex decision tree is 4 questions, but teams still argue about it in every HACCP meeting. I built it into a spreadsheet: answer Yes/No and it returns CCP / Not a CCP / Modify step, with the risk score that justifies significance. [link]

@@ -77,4 +77,5 @@ python3 side_hustle_tracker.py ../products
 python3 food_safety_kit.py ../products
 python3 listing_images.py ../listing-images        # consumer product images
 python3 listing_images.py ../listing-images fsk    # food safety kit images
+python3 listing_images.py ../listing-images pro    # food safety kit PRO images
 ```

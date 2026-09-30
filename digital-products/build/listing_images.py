@@ -12,6 +12,9 @@ import fitz  # pymupdf
 from PIL import Image, ImageDraw, ImageFont
 
 import budget_planner
+import functools
+import types
+
 import food_safety_kit
 import side_hustle_tracker
 
@@ -42,6 +45,16 @@ FSK_SHOTS = [
     (food_safety_kit, "fsk", "Supplier Approval", "A1:L12", "Never miss an expired supplier cert", "GFSI cert expiry and risk-based review dates"),
     (food_safety_kit, "fsk", "Training Matrix", "A1:L14", "Training matrix with expiry alerts", "Red = expired, amber = due soon, % current per person"),
     (food_safety_kit, "fsk", "Audit Readiness", "A1:G32", "Walk into your audit ready", "A 57-point self-assessment across 14 program areas"),
+]
+
+
+FSK_PRO = types.SimpleNamespace(build=functools.partial(food_safety_kit.build, pro=True))
+PRO_SHOTS = [
+    (FSK_PRO, "pro", "Dashboard", "A1:L54", "PRO: 20 live program indicators", "Adds mock recall, allergens, glass, pest, calibration & internal audits"),
+    (FSK_PRO, "pro", "Allergen Matrix", "A1:O12", "Allergen matrix that writes your statements", "Contains / shared-line statements and label re-verification, built for you"),
+    (FSK_PRO, "pro", "Pest Trend", "J1:P36", "Pest trends with action thresholds", "12-month trend by device type, with months over threshold flagged"),
+    (FSK_PRO, "pro", "Mock Recall", "A1:M11", "Mock recalls scored PASS / FAIL", "Time to complete and % of product accounted for, against your targets"),
+    (FSK_PRO, "pro", "Calibration Log", "A1:L10", "Calibration due dates, tracked for you", "Overdue and failed calibrations flagged"),
 ]
 
 
@@ -145,6 +158,20 @@ def main_fsk(out_dir):
           [shots[0], shots[2], shots[4]])
 
 
+def main_pro(out_dir):
+    os.makedirs(out_dir, exist_ok=True)
+    shots = []
+    with tempfile.TemporaryDirectory() as tmp:
+        for i, (mod, key, sheet, area, head, sub) in enumerate(PRO_SHOTS):
+            img = render(mod, sheet, area, tmp)
+            shots.append(img)
+            frame(img.copy(), head, sub, os.path.join(out_dir, f"pro-{i + 1:02d}-{sheet.replace(' ', '-').lower()}.png"))
+            print("rendered", sheet)
+    cover(os.path.join(out_dir, "pro-00-cover.png"), ["Food Safety Kit", "PRO"],
+          ["Everything in the Audit Kit", "+ Mock recall & allergen matrix", "+ Glass, pest & calibration", "+ Internal audit schedule"],
+          [shots[0], shots[1], shots[2]])
+
+
 def main(out_dir):
     os.makedirs(out_dir, exist_ok=True)
     shots = {"budget": [], "hustle": []}
@@ -167,5 +194,7 @@ if __name__ == "__main__":
     out = sys.argv[1] if len(sys.argv) > 1 else "../listing-images"
     if len(sys.argv) > 2 and sys.argv[2] == "fsk":
         main_fsk(out)
+    elif len(sys.argv) > 2 and sys.argv[2] == "pro":
+        main_pro(out)
     else:
         main(out)

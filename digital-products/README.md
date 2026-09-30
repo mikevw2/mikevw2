@@ -2,7 +2,7 @@
 
 Tested spreadsheet products, ready to sell on Etsy or Gumroad:
 
-- **Food Safety Audit-Readiness Kit** (B2B, $79–$129): see `FOOD-SAFETY-KIT.md`
+- **Food Safety Audit-Readiness Kit**, Standard ($79–$129) and PRO ($149–$229), for B2B buyers: see `FOOD-SAFETY-KIT.md`
 - Budget & Debt Payoff Planner, Side Hustle Profit & Tax Tracker, and a bundle of both (consumer, $8–$20): see `LISTINGS.md`
 
 - `LAUNCH-PLAN.md`: the 45-minute setup and the 30-day traffic plan. **Start here.**

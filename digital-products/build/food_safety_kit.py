@@ -157,7 +157,7 @@ def _put(ws, row, values, start_col=1):
             ws.cell(row=row, column=start_col + j, value=v)
 
 
-def build(path, sample=False, hook=None, year=None):  # year unused; keeps a common signature
+def build(path, sample=False, hook=None, year=None, pro=False):  # year unused; keeps a common signature
     today = dt.date.today()
     wb = Workbook()
     start = wb.active
@@ -175,7 +175,7 @@ def build(path, sample=False, hook=None, year=None):  # year unused; keeps a com
     aud = wb.create_sheet("Audit Readiness")
 
     # ---------------- Start Here ----------------
-    title(start, "Food Safety Audit-Readiness Kit",
+    title(start, "Food Safety Audit-Readiness Kit" + (" PRO" if pro else ""),
           "Your food safety program in one connected workbook. Built for SQF, BRCGS, FSSC 22000 and FSMA facilities.", 12)
     tabs = [
         ("Dashboard", "Live program health: audit readiness, open and overdue CAPAs, overdue sanitation, CIP pass rate, supplier and training status, EMP positives."),
@@ -190,6 +190,9 @@ def build(path, sample=False, hook=None, year=None):  # year unused; keeps a com
         ("Training Matrix", "Employees × required courses. Expired training turns red and expiring training turns amber, with a % current for each person."),
         ("Audit Readiness", f"{sum(len(v) for v in CHECKLIST.values())}-point self-assessment across 14 program areas, with a readiness score for each area and overall."),
     ]
+    if pro:
+        from food_safety_pro import TAB_NOTES
+        tabs += [(h, "PRO: " + b) for h, b in TAB_NOTES]
     r = 4
     for h, b in tabs:
         start.cell(row=r, column=2, value=h).font = Font(bold=True, size=12, color=DARK)
@@ -448,30 +451,36 @@ def build(path, sample=False, hook=None, year=None):  # year unused; keeps a com
     widths(aud, {"A": 6, "B": 70, "C": 10, "D": 7, "E": 36, "F": 14, "G": 13})
 
     # ---------------- Dashboard ----------------
-    title(dash, "Food Safety Program Dashboard", None, 12)
+    title(dash, "Food Safety Program Dashboard" + (" PRO" if pro else ""), None, 12)
     dash["B2"] = f'={FAC}&"  ·  as of "&TEXT(TODAY(),"mmm d, yyyy")'
     dash["B2"].font = Font(italic=True, color="CFE3D8")
     all_scores = f"'Audit Readiness'!$D$5:$D${aud_last}"
     kpis = [
-        ("Audit readiness", f'=IF(COUNT({all_scores})=0,"—",SUM({all_scores})/COUNT({all_scores}))', PCT),
-        ("Open CAPAs", f"=COUNTIF('CAPA Register'!$N$5:$N${capa_last},\"OPEN\")+COUNTIF('CAPA Register'!$N$5:$N${capa_last},\"OVERDUE\")", "0"),
-        ("Overdue CAPAs", f"=COUNTIF('CAPA Register'!$N$5:$N${capa_last},\"OVERDUE\")", "0"),
-        ("Sanitation overdue", f"=COUNTIF('Sanitation Schedule'!$J$5:$J${san_last},\"OVERDUE\")", "0"),
-        ("Sanitation due soon", f"=COUNTIF('Sanitation Schedule'!$J$5:$J${san_last},\"DUE SOON\")", "0"),
+        ("Audit readiness", f'=IF(COUNT({all_scores})=0,"—",SUM({all_scores})/COUNT({all_scores}))', PCT, None),
+        ("Open CAPAs", f"=COUNTIF('CAPA Register'!$N$5:$N${capa_last},\"OPEN\")+COUNTIF('CAPA Register'!$N$5:$N${capa_last},\"OVERDUE\")", "0", None),
+        ("Overdue CAPAs", f"=COUNTIF('CAPA Register'!$N$5:$N${capa_last},\"OVERDUE\")", "0", ("gt", "0")),
+        ("Sanitation overdue", f"=COUNTIF('Sanitation Schedule'!$J$5:$J${san_last},\"OVERDUE\")", "0", ("gt", "0")),
+        ("Sanitation due soon", f"=COUNTIF('Sanitation Schedule'!$J$5:$J${san_last},\"DUE SOON\")", "0", None),
         ("CIP pass rate (30 days)",
          f"=IFERROR(COUNTIFS('CIP Verification'!$K$5:$K${cip_last},\"PASS\",'CIP Verification'!$A$5:$A${cip_last},\">=\"&(TODAY()-30))"
          f"/(COUNTIFS('CIP Verification'!$K$5:$K${cip_last},\"PASS\",'CIP Verification'!$A$5:$A${cip_last},\">=\"&(TODAY()-30))"
-         f"+COUNTIFS('CIP Verification'!$K$5:$K${cip_last},\"FAIL\",'CIP Verification'!$A$5:$A${cip_last},\">=\"&(TODAY()-30))),\"—\")", PCT),
+         f"+COUNTIFS('CIP Verification'!$K$5:$K${cip_last},\"FAIL\",'CIP Verification'!$A$5:$A${cip_last},\">=\"&(TODAY()-30))),\"—\")", PCT, None),
         ("Supplier issues",
          f"=COUNTIF('Supplier Approval'!$L$5:$L${sup_last},\"CERT EXPIRED\")+COUNTIF('Supplier Approval'!$L$5:$L${sup_last},\"REVIEW OVERDUE\")"
-         f"+COUNTIF('Supplier Approval'!$L$5:$L${sup_last},\"MISSING CERT\")", "0"),
-        ("Training current", f"=IFERROR(AVERAGE('Training Matrix'!$D$5:$D${tl}),\"—\")", PCT),
+         f"+COUNTIF('Supplier Approval'!$L$5:$L${sup_last},\"MISSING CERT\")", "0", ("gt", "0")),
+        ("Training current", f"=IFERROR(AVERAGE('Training Matrix'!$D$5:$D${tl}),\"—\")", PCT, None),
         ("EMP positives (90 days)",
-         f"=COUNTIFS('EMP Log'!$F$5:$F${emp_last},\"Positive\",'EMP Log'!$A$5:$A${emp_last},\">=\"&(TODAY()-90))", "0"),
+         f"=COUNTIFS('EMP Log'!$F$5:$F${emp_last},\"Positive\",'EMP Log'!$A$5:$A${emp_last},\">=\"&(TODAY()-90))", "0", None),
         ("Open EMP positives",
-         f"=COUNTIF('EMP Log'!$K$5:$K${emp_last},\"OPEN POSITIVE\")+COUNTIF('EMP Log'!$K$5:$K${emp_last},\"ZONE 1 POSITIVE\")", "0"),
+         f"=COUNTIF('EMP Log'!$K$5:$K${emp_last},\"OPEN POSITIVE\")+COUNTIF('EMP Log'!$K$5:$K${emp_last},\"ZONE 1 POSITIVE\")", "0", ("gt", "0")),
     ]
-    for i, (lab, f, fmt) in enumerate(kpis):
+    pro_actions = []
+    if pro:
+        from food_safety_pro import add_pro_tabs
+        pro_kpis, pro_actions = add_pro_tabs(wb, {"today": today, "sample": sample, "WINDOW": WINDOW, "FREQ_TABLE": FREQ_TABLE,
+                                                  "FREQ_LIST": FREQ_LIST, "DEPT_LIST": DEPT_LIST, "sections": [x[0] for x in sec_rows]})
+        kpis += pro_kpis
+    for i, (lab, f, fmt, alarm) in enumerate(kpis):
         rr, cc = 4 + (i // 5) * 3, 2 + (i % 5) * 2
         dash.merge_cells(start_row=rr, start_column=cc, end_row=rr, end_column=cc + 1)
         dash.merge_cells(start_row=rr + 1, start_column=cc, end_row=rr + 1, end_column=cc + 1)
@@ -481,20 +490,29 @@ def build(path, sample=False, hook=None, year=None):  # year unused; keeps a com
         c.alignment = Alignment(horizontal="center")
         dash.cell(row=rr, column=cc + 1).fill = fill(MID)
         v = dash.cell(row=rr + 1, column=cc, value=f)
-        v.number_format = fmt
+        if fmt:
+            v.number_format = fmt
         v.font = Font(bold=True, size=18, color=DARK)
         v.alignment = Alignment(horizontal="center", vertical="center")
         v.fill = fill(LIGHT)
         dash.cell(row=rr + 1, column=cc + 1).fill = fill(LIGHT)
         dash.row_dimensions[rr + 1].height = 34
-    for rng in ("F5", "H5", "D8", "J8"):  # colour alarm tiles red when non-zero
-        dash.conditional_formatting.add(rng, CellIsRule(operator="greaterThan", formula=["0"], fill=fill(RED), font=Font(bold=True, size=18, color="9B1C1C")))
+        if alarm:  # tile turns red past its threshold
+            op, limit = alarm
+            if "!" in limit:  # cross-sheet thresholds go through a helper cell for Excel compatibility
+                h = dash.cell(row=rr + 1, column=14, value="=" + limit)
+                h.font = Font(color=WHITE)
+                limit = f"$N${rr + 1}"
+            dash.conditional_formatting.add(f"{col(cc)}{rr + 1}", CellIsRule(
+                operator="greaterThan" if op == "gt" else "equal", formula=[limit],
+                fill=fill(RED), font=Font(bold=True, size=18, color="9B1C1C")))
+    top = 4 + 3 * ((len(kpis) + 4) // 5)  # first row below the tiles
 
-    section(dash, "B11", "Audit readiness by program area")
-    header(dash, 12, 2, ["Program area", "", "", "Answered", "Readiness"])
-    dash.merge_cells("B12:D12")
+    section(dash, f"B{top}", "Audit readiness by program area")
+    header(dash, top + 1, 2, ["Program area", "", "", "Answered", "Readiness"])
+    dash.merge_cells(f"B{top + 1}:D{top + 1}")
     for i, (sec, a, b) in enumerate(sec_rows):
-        rr = 13 + i
+        rr = top + 2 + i
         dash.merge_cells(start_row=rr, start_column=2, end_row=rr, end_column=4)
         dash.cell(row=rr, column=2, value=sec)
         rng = f"'Audit Readiness'!$D${a}:$D${b}"
@@ -503,10 +521,10 @@ def build(path, sample=False, hook=None, year=None):  # year unused; keeps a com
         dash.cell(row=rr, column=6, value=f'=IF(COUNT({rng})=0,0,SUM({rng})/COUNT({rng}))').number_format = "0%"
         for cc in range(2, 7):
             dash.cell(row=rr, column=cc).border = BOX
-    sl = 12 + len(sec_rows)
-    dash.conditional_formatting.add(f"F13:F{sl}", DataBarRule(start_type="num", start_value=0, end_type="num", end_value=1, color="2E7D5B"))
+    sl = top + 1 + len(sec_rows)
+    dash.conditional_formatting.add(f"F{top + 2}:F{sl}", DataBarRule(start_type="num", start_value=0, end_type="num", end_value=1, color="2E7D5B"))
 
-    section(dash, "H11", "Action list")
+    section(dash, f"H{top}", "Action list")
     actions = [
         ("Overdue CAPAs", "CAPA Register", "OVERDUE"),
         ("Overdue sanitation", "Sanitation Schedule", "OVERDUE"),
@@ -515,12 +533,12 @@ def build(path, sample=False, hook=None, year=None):  # year unused; keeps a com
         ("Supplier documents", "Supplier Approval", "not APPROVED"),
         ("Expired training", "Training Matrix", "red cells"),
         ("Audit gaps", "Audit Readiness", "No / Partial"),
-    ]
-    header(dash, 12, 8, ["Item", "", "Where to look", "", ""])
-    dash.merge_cells("H12:I12")
-    dash.merge_cells("J12:L12")
+    ] + pro_actions
+    header(dash, top + 1, 8, ["Item", "", "Where to look", "", ""])
+    dash.merge_cells(f"H{top + 1}:I{top + 1}")
+    dash.merge_cells(f"J{top + 1}:L{top + 1}")
     for i, (a, b, c_) in enumerate(actions):
-        rr = 13 + i
+        rr = top + 2 + i
         dash.merge_cells(start_row=rr, start_column=8, end_row=rr, end_column=9)
         dash.merge_cells(start_row=rr, start_column=10, end_row=rr, end_column=12)
         dash.cell(row=rr, column=8, value=a)
@@ -534,13 +552,13 @@ def build(path, sample=False, hook=None, year=None):  # year unused; keeps a com
     ch.legend = None
     ch.height = 9
     ch.width = 13.5
-    ch.add_data(Reference(dash, min_col=6, min_row=13, max_row=sl), titles_from_data=False)
-    ch.set_categories(Reference(dash, min_col=2, min_row=13, max_row=sl))
+    ch.add_data(Reference(dash, min_col=6, min_row=top + 2, max_row=sl), titles_from_data=False)
+    ch.set_categories(Reference(dash, min_col=2, min_row=top + 2, max_row=sl))
     ch.x_axis.scaling.orientation = "maxMin"
     ch.y_axis.scaling.min = 0
     ch.y_axis.scaling.max = 1
     ch.y_axis.number_format = "0%"
-    dash.add_chart(ch, f"H{14 + len(actions)}")
+    dash.add_chart(ch, f"H{top + 3 + len(actions)}")
     widths(dash, {"A": 3, **{col(c): 13 for c in range(2, 13)}})
 
     for ws in (setup,):
@@ -674,3 +692,5 @@ if __name__ == "__main__":
     out = sys.argv[1] if len(sys.argv) > 1 else "."
     build(f"{out}/Food-Safety-Audit-Readiness-Kit.xlsx", sample=False)
     build(f"{out}/Food-Safety-Audit-Readiness-Kit-SAMPLE.xlsx", sample=True)
+    build(f"{out}/Food-Safety-Audit-Readiness-Kit-PRO.xlsx", sample=False, pro=True)
+    build(f"{out}/Food-Safety-Audit-Readiness-Kit-PRO-SAMPLE.xlsx", sample=True, pro=True)

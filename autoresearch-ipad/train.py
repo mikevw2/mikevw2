@@ -82,8 +82,9 @@ def loss_and_grads(p, X, Y):
         g[f"W{i}"] = hs[i].T @ dz
         g[f"b{i}"] = dz.sum(axis=0)
         dh = dz @ p[f"W{i}"].T
-    g["emb"] = np.zeros_like(p["emb"])
-    np.add.at(g["emb"], X.reshape(-1), dh.reshape(-1, EMB_DIM))
+    Xf, dhf = X.reshape(-1), dh.reshape(-1, EMB_DIM)
+    g["emb"] = np.stack([np.bincount(Xf, weights=dhf[:, j], minlength=VOCAB_SIZE)
+                         for j in range(EMB_DIM)], axis=1).astype(np.float32)
     return loss, g
 
 # ---------------------------------------------------------------------------

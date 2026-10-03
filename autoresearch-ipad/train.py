@@ -18,7 +18,7 @@ N_LAYERS = 2            # number of hidden layers
 ACTIVATION = "relu"     # "tanh" or "relu"
 BATCH_SIZE = 512        # examples per optimizer step
 LR = 0.004              # peak learning rate (AdamW)
-WEIGHT_DECAY = 0.0      # decoupled weight decay on matrices
+WEIGHT_DECAY = 0.02     # decoupled weight decay on matrices
 WARMDOWN_RATIO = 0.5    # fraction of the time budget spent decaying LR to 0
 # --- end hyperparameters ---
 

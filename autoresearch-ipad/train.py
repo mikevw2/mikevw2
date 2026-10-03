@@ -19,7 +19,7 @@ ACTIVATION = "tanh"     # "tanh" or "relu"
 BATCH_SIZE = 128        # examples per optimizer step
 LR = 0.003              # peak learning rate (AdamW)
 WEIGHT_DECAY = 0.0      # decoupled weight decay on matrices
-WARMDOWN_RATIO = 0.0    # fraction of the time budget spent decaying LR to 0
+WARMDOWN_RATIO = 0.5    # fraction of the time budget spent decaying LR to 0
 # --- end hyperparameters ---
 
 ADAM_BETAS = (0.9, 0.999)

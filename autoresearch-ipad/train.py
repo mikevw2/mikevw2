@@ -15,7 +15,7 @@ CONTEXT = 8             # bytes of context the model looks at (<= CTX_MAX)
 EMB_DIM = 16            # embedding size per byte
 HIDDEN = 512            # hidden layer width
 N_LAYERS = 1            # number of hidden layers
-ACTIVATION = "tanh"     # "tanh" or "relu"
+ACTIVATION = "relu"     # "tanh" or "relu"
 BATCH_SIZE = 512        # examples per optimizer step
 LR = 0.006              # peak learning rate (AdamW)
 WEIGHT_DECAY = 0.0      # decoupled weight decay on matrices

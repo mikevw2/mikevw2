@@ -4,3 +4,4 @@ history/
 results.tsv
 run.log
 __pycache__/
+.venv/

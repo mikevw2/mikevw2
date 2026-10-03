@@ -18,11 +18,12 @@ back to a log of experiments and (hopefully) a better model.
 | `run.py` | nobody | Runs one experiment and does the bookkeeping: snapshot to `history/`, train, score, keep (→ `best/`) or revert, append to `results.tsv`. No git and no subprocesses, so it works on iPadOS. |
 | `search.py` | nobody | The **on-device loop** with no AI agent: mutates one hyperparameter at random, runs it, keeps or reverts. |
 | `program.md` | you | Instructions for an **AI agent** (e.g. Claude Code) to run the loop and invent real ideas: new architectures, optimizers, schedules. |
+| `remote/` | nobody | `setup.sh` + `start.sh` to run the agent loop on your own Mac/Linux machine, driven from the iPad over SSH (Termius). |
 
 The default data is Tiny Shakespeare (1.1 MB). To train on your own text instead, put
 any plain-text file at `data/input.txt` before starting a run.
 
-## Two ways to run it
+## Three ways to run it
 
 ### 1. On the iPad itself: `search.py` (no agent)
 
@@ -74,6 +75,45 @@ Install numpy first if it's missing, then do the setup.
 
 The agent creates an `autoresearch/<tag>` branch and commits each improvement. When it's
 done, you can copy the winning `train.py` onto the iPad and run it there.
+
+### 3. Agent-driven on your own machine, controlled from the iPad over SSH (Termius)
+
+Claude Code runs on a Mac or Linux machine you own or rent, and the iPad is your
+terminal into it. Unlike a cloud session, it can run for as long as you like, and it
+keeps running in `tmux` after you close Termius.
+
+**You need a host to connect to.** One of:
+- **A Mac at home:** *System Settings → General → Sharing → Remote Login* → on. Connect
+  to its local IP (or install Tailscale on the Mac and the iPad to reach it from anywhere).
+- **A Linux server:** any Ubuntu/Debian box, or a small cloud VPS (2–4 vCPU is plenty;
+  this is CPU-only).
+
+**In Termius:** *Hosts → +* → address (IP or hostname), username, password or SSH key → connect.
+
+**On the host, once:**
+```sh
+curl -fsSL https://raw.githubusercontent.com/mikevw2/mikevw2/claude/karpathy-auto-loops-khzzst/autoresearch-ipad/remote/setup.sh | bash
+```
+This installs git, tmux, Python + NumPy (in `autoresearch-ipad/.venv`) and Claude Code,
+clones this repo to `~/mikevw2`, and downloads the data. It's safe to re-run.
+
+**Start the agent:**
+```sh
+bash ~/mikevw2/autoresearch-ipad/remote/start.sh
+```
+- The first time, Claude Code shows a login URL. Open it in Safari on the iPad, approve,
+  and paste the code back into Termius.
+- It then starts on `program.md` by itself. Confirm the run tag when it asks, and it loops.
+- **Leave it running:** press `Ctrl-b` then `d` to detach, then close Termius.
+  **Check in later:** run `start.sh` again and it reattaches.
+- **Stop it:** reattach and press `Esc`, or run `tmux kill-session -t autoresearch`.
+
+**What the agent is allowed to do without asking**
+(`autoresearch-ipad/.claude/settings.json`): edit `train.py`, run `python3 run.py`,
+read logs, and `git add`/`commit` on its own branch. It's blocked from `git push`, `rm`,
+`pip`, and editing `prepare.py`/`run.py`. Anything else pops up a prompt, which will
+wait until you reattach and answer. When you're happy with a run, push its branch
+yourself: `git push -u origin autoresearch/<tag>`.
 
 ## Notes
 

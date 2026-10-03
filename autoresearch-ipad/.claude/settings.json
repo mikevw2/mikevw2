@@ -1,0 +1,29 @@
+{
+  "permissions": {
+    "allow": [
+      "Edit(./train.py)",
+      "Bash(python3 run.py *)",
+      "Bash(python3 prepare.py)",
+      "Bash(grep *)",
+      "Bash(tail *)",
+      "Bash(head *)",
+      "Bash(cat *)",
+      "Bash(ls *)",
+      "Bash(cp history/*)",
+      "Bash(git status)",
+      "Bash(git log *)",
+      "Bash(git diff *)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(git checkout -b autoresearch/*)",
+      "Bash(git branch *)"
+    ],
+    "deny": [
+      "Edit(./prepare.py)",
+      "Edit(./run.py)",
+      "Bash(git push *)",
+      "Bash(rm *)",
+      "Bash(pip *)"
+    ]
+  }
+}

@@ -80,7 +80,7 @@ done, you can copy the winning `train.py` onto the iPad and run it there.
 - **Results aren't comparable across devices.** The budget is wall-clock time, so a faster
   machine trains for more steps. An M5 iPad and a cloud container will find different "best"
   models. Compare runs only on the same device.
-- **Noise:** with background load, the same code can vary by about ±0.002 bpb.
+- **Noise:** the step count varies with machine load, so the same code scores differently each run: about ±0.005 bpb once the LR warmdown is on, and up to ±0.04 with the constant-LR baseline. Treat small "improvements" with suspicion.
 - **Footprint:** the baseline peaks at about 90 MB of RAM, far below what iPadOS allows one app.
 - **Baseline** (this cloud container): about 36k steps in 60 s, val_bpb ≈ 2.61.
   Three random-search steps (lower LR, larger batch) got it to ≈ 2.49.

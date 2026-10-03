@@ -55,8 +55,10 @@ NumPy is fastest with large matrix multiplies and slowest with Python loops — 
 
 **Simplicity criterion**: all else being equal, simpler is better. A tiny improvement
 that adds ugly complexity is not worth it. Removing code and getting equal or better
-results is a win. Run-to-run noise from machine load is roughly ±0.002 bpb, so treat
-smaller "improvements" with suspicion.
+results is a win. Run-to-run noise is real: the wall-clock budget means the step count
+varies with machine load. Expect about ±0.005 bpb with an LR warmdown and much more
+(±0.04 seen) without one, so treat small "improvements" with suspicion and re-run a
+promising result before building on it.
 
 **The first run**: always establish the baseline by running `train.py` unchanged.
 

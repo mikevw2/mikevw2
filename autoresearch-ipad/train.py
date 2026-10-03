@@ -11,7 +11,7 @@ import numpy as np
 from prepare import CTX_MAX, TIME_BUDGET, VOCAB_SIZE, evaluate_bpb, load_splits
 
 # --- hyperparameters (search.py edits these) ---
-CONTEXT = 8             # bytes of context the model looks at (<= CTX_MAX)
+CONTEXT = 6             # bytes of context the model looks at (<= CTX_MAX)
 EMB_DIM = 24            # embedding size per byte
 HIDDEN = 512            # hidden layer width
 N_LAYERS = 2            # number of hidden layers

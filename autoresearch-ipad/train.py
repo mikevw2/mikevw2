@@ -11,15 +11,15 @@ import numpy as np
 from prepare import CTX_MAX, TIME_BUDGET, VOCAB_SIZE, evaluate_bpb, load_splits
 
 # --- hyperparameters (search.py edits these) ---
-CONTEXT = 8             # bytes of context the model looks at (<= CTX_MAX)
-EMB_DIM = 16            # embedding size per byte
-HIDDEN = 256            # hidden layer width
-N_LAYERS = 1            # number of hidden layers
-ACTIVATION = "tanh"     # "tanh" or "relu"
-BATCH_SIZE = 128        # examples per optimizer step
-LR = 0.003              # peak learning rate (AdamW)
-WEIGHT_DECAY = 0.0      # decoupled weight decay on matrices
-WARMDOWN_RATIO = 0.0    # fraction of the time budget spent decaying LR to 0
+CONTEXT = 5             # bytes of context the model looks at (<= CTX_MAX)
+EMB_DIM = 24            # embedding size per byte
+HIDDEN = 512            # hidden layer width
+N_LAYERS = 2            # number of hidden layers
+ACTIVATION = "relu"     # "tanh" or "relu"
+BATCH_SIZE = 1024       # examples per optimizer step
+LR = 0.004              # peak learning rate (AdamW)
+WEIGHT_DECAY = 0.01     # decoupled weight decay on matrices
+WARMDOWN_RATIO = 0.5    # fraction of the time budget spent decaying LR to 0
 # --- end hyperparameters ---
 
 ADAM_BETAS = (0.9, 0.999)
@@ -82,8 +82,9 @@ def loss_and_grads(p, X, Y):
         g[f"W{i}"] = hs[i].T @ dz
         g[f"b{i}"] = dz.sum(axis=0)
         dh = dz @ p[f"W{i}"].T
-    g["emb"] = np.zeros_like(p["emb"])
-    np.add.at(g["emb"], X.reshape(-1), dh.reshape(-1, EMB_DIM))
+    Xf, dhf = X.reshape(-1), dh.reshape(-1, EMB_DIM)
+    g["emb"] = np.stack([np.bincount(Xf, weights=dhf[:, j], minlength=VOCAB_SIZE)
+                         for j in range(EMB_DIM)], axis=1).astype(np.float32)
     return loss, g
 
 # ---------------------------------------------------------------------------

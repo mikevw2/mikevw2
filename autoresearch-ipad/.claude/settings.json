@@ -4,6 +4,8 @@
       "Edit(./train.py)",
       "Bash(python3 run.py *)",
       "Bash(python3 prepare.py)",
+      "Bash(python prepare.py)",
+      "Bash(python run.py *)",
       "Bash(grep *)",
       "Bash(tail *)",
       "Bash(head *)",

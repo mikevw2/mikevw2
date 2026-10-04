@@ -76,44 +76,70 @@ Install numpy first if it's missing, then do the setup.
 The agent creates an `autoresearch/<tag>` branch and commits each improvement. When it's
 done, you can copy the winning `train.py` onto the iPad and run it there.
 
-### 3. Agent-driven on your own machine, controlled from the iPad over SSH (Termius)
+### 3. Agent-driven on your Mac, controlled from the iPad over SSH (Termius)
 
-Claude Code runs on a Mac or Linux machine you own or rent, and the iPad is your
-terminal into it. Unlike a cloud session, it can run for as long as you like, and it
-keeps running in `tmux` after you close Termius.
+Claude Code runs on your Mac, and the iPad is your terminal into it. Unlike a cloud
+session, it can run for as long as you like, and it keeps running after you close
+Termius. (Ubuntu/Debian Linux works the same way.)
 
-**You need a host to connect to.** One of:
-- **A Mac at home:** *System Settings → General → Sharing → Remote Login* → on. Connect
-  to its local IP (or install Tailscale on the Mac and the iPad to reach it from anywhere).
-- **A Linux server:** any Ubuntu/Debian box, or a small cloud VPS (2–4 vCPU is plenty;
-  this is CPU-only).
+**Part A: at the Mac, once (about 10 minutes)**
 
-**In Termius:** *Hosts → +* → address (IP or hostname), username, password or SSH key → connect.
+1. **Turn on SSH:** *System Settings → General → Sharing → Remote Login* → on.
+2. Open **Terminal** and run the installer:
+   ```sh
+   curl -fsSL https://raw.githubusercontent.com/mikevw2/mikevw2/claude/karpathy-auto-loops-khzzst/autoresearch-ipad/remote/setup.sh | bash
+   ```
+   It installs Python + NumPy (in `~/mikevw2/autoresearch-ipad/.venv`) and Claude Code,
+   clones this repo to `~/mikevw2`, and downloads the data. If it asks you to install the
+   command line developer tools, accept, then run it again.
+3. **Log in to Claude Code here, at the Mac**, where the browser opens normally:
+   ```sh
+   ~/.local/bin/claude
+   ```
+   Finish the login, then type `/exit`. Logging in at the Mac avoids macOS Keychain
+   problems that can happen when logging in over SSH.
+4. **Note what Termius needs:**
+   ```sh
+   whoami                  # your username
+   ipconfig getifaddr en0  # the Mac's Wi-Fi IP address, e.g. 192.168.1.23
+   ```
+5. **Stop the Mac from sleeping** while it's plugged in: *System Settings → Battery
+   (or Energy) → Options → "Prevent automatic sleeping when the display is off"* on.
+   (`start.sh` also runs `caffeinate`.) A MacBook needs its lid open, or an external
+   display attached.
 
-**On the host, once:**
-```sh
-curl -fsSL https://raw.githubusercontent.com/mikevw2/mikevw2/claude/karpathy-auto-loops-khzzst/autoresearch-ipad/remote/setup.sh | bash
-```
-This installs git, tmux, Python + NumPy (in `autoresearch-ipad/.venv`) and Claude Code,
-clones this repo to `~/mikevw2`, and downloads the data. It's safe to re-run.
+**Part B: from the iPad, every time**
 
-**Start the agent:**
-```sh
-bash ~/mikevw2/autoresearch-ipad/remote/start.sh
-```
-- The first time, Claude Code shows a login URL. Open it in Safari on the iPad, approve,
-  and paste the code back into Termius.
-- It then starts on `program.md` by itself. Confirm the run tag when it asks, and it loops.
-- **Leave it running:** press `Ctrl-b` then `d` to detach, then close Termius.
-  **Check in later:** run `start.sh` again and it reattaches.
-- **Stop it:** reattach and press `Esc`, or run `tmux kill-session -t autoresearch`.
+1. **Termius:** *Hosts → +* → address = the IP from step 4, username = `whoami`, and your
+   Mac login password → connect.
+2. **Start (or reattach to) the agent:**
+   ```sh
+   bash ~/mikevw2/autoresearch-ipad/remote/start.sh
+   ```
+   It opens Claude Code on `program.md`. Confirm the run tag when it asks, and it loops,
+   about 50 experiments an hour.
+3. **Leave it running:** press `Ctrl-b` then `d` to detach, then close Termius. On a Mac
+   without tmux it uses the built-in `screen`, where it's `Ctrl-a` then `d`. **Check in
+   later:** run `start.sh` again and it reattaches.
+4. **Stop it:** reattach, press `Esc`, and type `/exit`.
+
+**Away from home?** The IP above only works on your Wi-Fi. Install **Tailscale** (free) on
+the Mac and the iPad, and use the Mac's Tailscale address in Termius instead.
 
 **What the agent is allowed to do without asking**
-(`autoresearch-ipad/.claude/settings.json`): edit `train.py`, run `python3 run.py`,
+(`autoresearch-ipad/.claude/settings.json`): edit `train.py`, run `python run.py`,
 read logs, and `git add`/`commit` on its own branch. It's blocked from `git push`, `rm`,
 `pip`, and editing `prepare.py`/`run.py`. Anything else pops up a prompt, which will
 wait until you reattach and answer. When you're happy with a run, push its branch
 yourself: `git push -u origin autoresearch/<tag>`.
+
+**If something goes wrong**
+- *`claude: command not found`*: run `~/.local/bin/claude`, or open a new Termius tab.
+- *Claude Code says you're not logged in, or mentions the keychain, over SSH*: run
+  `security unlock-keychain ~/Library/Keychains/login.keychain-db` (asks for your Mac
+  password), then `start.sh` again. Or redo Part A step 3 at the Mac.
+- *Termius can't connect*: check that Remote Login is on, the Mac is awake, and you're
+  on the same Wi-Fi (or both on Tailscale).
 
 ## Notes
 
@@ -122,5 +148,7 @@ yourself: `git push -u origin autoresearch/<tag>`.
   models. Compare runs only on the same device.
 - **Noise:** the step count varies with machine load, so the same code scores differently each run: about ±0.005 bpb once the LR warmdown is on, and up to ±0.04 with the constant-LR baseline. Treat small "improvements" with suspicion.
 - **Footprint:** the baseline peaks at about 90 MB of RAM, far below what iPadOS allows one app.
-- **Baseline** (this cloud container): about 36k steps in 60 s, val_bpb ≈ 2.61.
-  Three random-search steps (lower LR, larger batch) got it to ≈ 2.49.
+- **Starting point:** `train.py` is the winner of a 40-experiment agent run in a cloud
+  container (val_bpb 2.57 → 2.18). Each improvement is a commit on the `autoresearch/oct3`
+  branch. On a new device, the first run re-measures the baseline, because scores
+  depend on the hardware.

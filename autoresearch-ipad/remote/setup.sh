@@ -28,8 +28,10 @@ case "$(uname -s)" in
     if ! command -v tmux >/dev/null 2>&1; then
       if command -v brew >/dev/null 2>&1; then
         brew install tmux
+      elif command -v screen >/dev/null 2>&1; then
+        echo "tmux not found; start.sh will use the built-in 'screen' instead."
       else
-        echo "tmux is missing. Install Homebrew (https://brew.sh), then: brew install tmux"
+        echo "Neither tmux nor screen found. Install Homebrew (https://brew.sh), then: brew install tmux"
         exit 1
       fi
     fi
@@ -75,7 +77,7 @@ say "Done. Next:"
 cat <<EOF
   1. Run:  bash $PROJECT/remote/start.sh
   2. The first time, Claude Code asks you to log in: open the URL it prints
-     in Safari on your iPad, approve, and paste the code back into Termius.
-  3. Detach and leave it running with Ctrl-b then d. Reconnect later with
-     the same start.sh command.
+     in a browser, approve, and paste the code back into the terminal.
+  3. Detach and leave it running with Ctrl-b then d (tmux) or Ctrl-a then d
+     (screen). Reconnect later with the same start.sh command.
 EOF

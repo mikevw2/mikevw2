@@ -1,0 +1,42 @@
+{
+  "manifest_version": 3,
+  "name": "Real Feed — AI Video Filter",
+  "short_name": "Real Feed",
+  "version": "1.0.0",
+  "description": "Finds AI-generated videos in your YouTube and TikTok feeds and hides, blurs, or labels them.",
+  "permissions": ["storage"],
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "action": {
+    "default_title": "Real Feed",
+    "default_popup": "popup/popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png"
+    }
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://www.youtube.com/*", "https://m.youtube.com/*"],
+      "js": ["src/common.js", "src/detector.js", "src/platforms/youtube.js", "src/content.js"],
+      "css": ["src/content.css"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": ["https://www.tiktok.com/*"],
+      "js": ["src/common.js", "src/detector.js", "src/platforms/tiktok.js", "src/content.js"],
+      "css": ["src/content.css"],
+      "run_at": "document_idle"
+    }
+  ],
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "real-feed@ai-video-filter",
+      "strict_min_version": "121.0"
+    }
+  }
+}

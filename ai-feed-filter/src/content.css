@@ -1,0 +1,159 @@
+/* Real Feed — styles injected into YouTube / TikTok. Everything is prefixed aiff-. */
+
+.aiff-hidden {
+  display: none !important;
+}
+
+.aiff-host {
+  position: relative !important;
+}
+
+.aiff-blurred > :not(.aiff-injected) {
+  filter: blur(22px) saturate(0.6) !important;
+  pointer-events: none !important;
+}
+
+.aiff-covered > :not(.aiff-injected) {
+  visibility: hidden !important;
+}
+
+.aiff-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+  background: rgba(15, 15, 20, 0.55);
+  border-radius: 12px;
+  overflow: hidden;
+  container-type: size;
+}
+
+.aiff-covered > .aiff-overlay {
+  background: #15151b;
+}
+
+.aiff-panel {
+  max-width: 340px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  background: rgba(24, 24, 30, 0.96);
+  color: #f2f2f5;
+  font: 13px/1.4 system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  text-align: center;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.35);
+}
+
+.aiff-panel-title {
+  font-weight: 700;
+  font-size: 14px;
+  margin-bottom: 4px;
+}
+
+.aiff-panel-reasons {
+  color: #b9b9c6;
+  font-size: 12px;
+  margin-bottom: 10px;
+}
+
+.aiff-panel-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: center;
+}
+
+.aiff-btn {
+  all: unset;
+  box-sizing: border-box;
+  cursor: pointer;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: #f2f2f5;
+  color: #15151b;
+  font: 600 12px/1.2 system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+}
+
+.aiff-btn:hover {
+  background: #ffffff;
+}
+
+.aiff-btn:focus-visible {
+  outline: 2px solid #7aa2ff;
+  outline-offset: 2px;
+}
+
+.aiff-btn-ghost {
+  background: transparent;
+  color: #d6d6e0;
+  box-shadow: inset 0 0 0 1px #50505e;
+}
+
+.aiff-btn-ghost:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* Small thumbnails: keep just the title and the primary button. */
+@container (max-height: 170px) {
+  .aiff-panel {
+    padding: 8px 10px;
+  }
+  .aiff-panel-reasons,
+  .aiff-btn-ghost {
+    display: none;
+  }
+  .aiff-panel-title {
+    margin-bottom: 6px;
+  }
+}
+
+.aiff-badge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  z-index: 50;
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: #e8453c;
+  color: #fff;
+  font: 700 11px/1.3 system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  pointer-events: auto;
+}
+
+.aiff-mark {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 50;
+  padding: 4px 9px;
+  background: rgba(20, 20, 26, 0.85);
+  color: #fff;
+  font-size: 11px;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.aiff-mark:hover {
+  background: #e8453c;
+  color: #fff;
+}
+
+.aiff-host:hover > .aiff-mark,
+.aiff-mark:focus-visible {
+  opacity: 1;
+}
+
+.aiff-watch-banner {
+  margin: 12px 0;
+}
+
+.aiff-watch-banner .aiff-panel {
+  max-width: none;
+  text-align: left;
+}
+
+.aiff-watch-banner .aiff-panel-actions {
+  justify-content: flex-start;
+}

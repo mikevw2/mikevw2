@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Real Feed</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <header>
+      <img src="../icons/icon32.png" alt="" width="24" height="24" />
+      <h1>Real Feed</h1>
+      <label class="switch" title="Turn filtering on or off">
+        <input type="checkbox" id="enabled" />
+        <span></span>
+      </label>
+    </header>
+
+    <section class="stats">
+      <div><strong id="stat-total">0</strong><span>AI videos filtered</span></div>
+      <div><strong id="stat-youtube">0</strong><span>YouTube</span></div>
+      <div><strong id="stat-tiktok">0</strong><span>TikTok</span></div>
+    </section>
+
+    <fieldset id="controls">
+      <div class="row">
+        <span>Filter on</span>
+        <label class="chip"><input type="checkbox" id="youtube" /> YouTube</label>
+        <label class="chip"><input type="checkbox" id="tiktok" /> TikTok</label>
+      </div>
+
+      <div class="row">
+        <span>When found</span>
+        <div class="seg" role="radiogroup" aria-label="Action">
+          <label><input type="radio" name="mode" value="hide" />Hide</label>
+          <label><input type="radio" name="mode" value="blur" />Blur</label>
+          <label><input type="radio" name="mode" value="label" />Label</label>
+        </div>
+      </div>
+
+      <div class="row">
+        <span>Sensitivity</span>
+        <div class="seg" role="radiogroup" aria-label="Sensitivity">
+          <label><input type="radio" name="sensitivity" value="relaxed" />Relaxed</label>
+          <label><input type="radio" name="sensitivity" value="balanced" />Balanced</label>
+          <label><input type="radio" name="sensitivity" value="strict" />Strict</label>
+        </div>
+      </div>
+      <p class="hint" id="sensitivity-hint"></p>
+
+      <label class="check"><input type="checkbox" id="autoSkip" /> Auto-skip AI videos in Shorts &amp; For You</label>
+      <label class="check"><input type="checkbox" id="showMarkButton" /> Show “Mark AI” button on videos</label>
+
+      <details>
+        <summary>Blocked channels <span class="count" id="blockedChannels-count"></span></summary>
+        <p class="hint">Always treated as AI. One @handle per line.</p>
+        <textarea id="blockedChannels" rows="4" spellcheck="false" placeholder="@someaichannel"></textarea>
+      </details>
+      <details>
+        <summary>Trusted channels <span class="count" id="allowedChannels-count"></span></summary>
+        <p class="hint">Never filtered. One @handle per line.</p>
+        <textarea id="allowedChannels" rows="4" spellcheck="false" placeholder="@favoritecreator"></textarea>
+      </details>
+      <details>
+        <summary>Extra keywords <span class="count" id="customKeywords-count"></span></summary>
+        <p class="hint">Words or hashtags that should count as AI signals. One per line.</p>
+        <textarea id="customKeywords" rows="4" spellcheck="false" placeholder="#aislop"></textarea>
+      </details>
+    </fieldset>
+
+    <footer>
+      <span id="saved" aria-live="polite"></span>
+      <button type="button" id="reset-stats">Reset counts</button>
+    </footer>
+
+    <script src="../src/common.js"></script>
+    <script src="popup.js"></script>
+  </body>
+</html>

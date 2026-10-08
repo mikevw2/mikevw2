@@ -1,0 +1,37 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>YouTube fixture</title>
+<style>#contents{display:flex;flex-wrap:wrap;gap:8px} ytd-rich-item-renderer{display:block;width:300px;height:240px;border:1px solid #ccc}</style></head>
+<body>
+<div id="contents">
+  <ytd-rich-item-renderer id="labeled"><div id="content">
+    <a id="video-title-link" href="/watch?v=1"><span id="video-title">Lion rescues a puppy</span></a>
+    <ytd-channel-name><a href="/@wildclips">Wild Clips</a></ytd-channel-name>
+    <ytd-badge-supported-renderer>Altered or synthetic content</ytd-badge-supported-renderer>
+  </div></ytd-rich-item-renderer>
+  <ytd-rich-item-renderer id="hashtag"><div id="content">
+    <a id="video-title-link" href="/watch?v=2"><span id="video-title">Grandma surfs a tsunami #sora #aivideo</span></a>
+    <ytd-channel-name><a href="/@viralnow">Viral Now</a></ytd-channel-name>
+  </div></ytd-rich-item-renderer>
+  <ytd-rich-item-renderer id="normal"><div id="content">
+    <a id="video-title-link" href="/watch?v=3"><span id="video-title">Easy 15 minute pasta</span></a>
+    <ytd-channel-name><a href="/@cookwithme">Cook With Me</a></ytd-channel-name>
+  </div></ytd-rich-item-renderer>
+  <ytd-rich-item-renderer id="about"><div id="content">
+    <a id="video-title-link" href="/watch?v=4"><span id="video-title">I tried Sora 2 for a week (honest review)</span></a>
+    <ytd-channel-name><a href="/@techreviews">Tech Reviews</a></ytd-channel-name>
+  </div></ytd-rich-item-renderer>
+  <ytd-rich-item-renderer id="sameChannel"><div id="content">
+    <a id="video-title-link" href="/watch?v=5"><span id="video-title">Cat plays piano</span></a>
+    <ytd-channel-name><a href="/@viralnow">Viral Now</a></ytd-channel-name>
+  </div></ytd-rich-item-renderer>
+</div>
+<script>
+  // Late-loaded card, like infinite scroll
+  setTimeout(() => {
+    const d = document.createElement('ytd-rich-item-renderer');
+    d.id = 'late';
+    d.innerHTML = '<div id="content"><a id="video-title-link" href="/watch?v=6"><span id="video-title">Dragons over Tokyo (made with AI)</span></a><ytd-channel-name><a href="/@dreamy">Dreamy</a></ytd-channel-name></div>';
+    document.getElementById('contents').append(d);
+  }, 600);
+</script>
+</body></html>

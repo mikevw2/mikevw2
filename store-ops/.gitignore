@@ -1,0 +1,7 @@
+node_modules/
+dist/
+.env
+*.log
+PAUSED
+reports/weekly/*.md
+!reports/weekly/.gitkeep

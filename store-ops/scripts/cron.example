@@ -1,0 +1,16 @@
+# store-ops crontab. Install with: crontab scripts/cron.example  (after editing paths)
+# All times America/Boise. Each job writes a job_runs row; failures exit non-zero and are logged.
+CRON_TZ=America/Boise
+TZ=America/Boise
+SHELL=/bin/bash
+PATH=/usr/local/bin:/usr/bin:/bin
+STORE_OPS=/home/user/mikevw2/store-ops
+
+# Content drafter: one guide + up to ten page rewrites, as drafts only.
+0 6 * * *      cd $STORE_OPS && npx tsx src/jobs/drafter.ts        >> logs/drafter.log 2>&1
+# Pin factory: copy + rendered images into pin_queue as pending.
+30 6 * * *     cd $STORE_OPS && npx tsx src/jobs/pinFactoryJob.ts  >> logs/pin-factory.log 2>&1
+# Poster: hourly 08:00–21:00, posts at most one approved pin per run, auto-pauses on errors.
+0 8-21 * * *   cd $STORE_OPS && npx tsx src/jobs/poster.ts         >> logs/poster.log 2>&1
+# Weekly digest: Friday 07:00 -> reports/weekly/YYYY-MM-DD.md
+0 7 * * 5      cd $STORE_OPS && npx tsx src/jobs/weeklyReport.ts   >> logs/weekly-report.log 2>&1

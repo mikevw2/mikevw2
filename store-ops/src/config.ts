@@ -5,7 +5,7 @@
  * decisions through src/guards/caps.ts, which is pure and unit-tested.
  */
 import "dotenv/config";
-import { z } from "zod";
+import { z } from "zod/v4";
 
 export const CAPS = {
   /** Pins posted per calendar day, all boards combined. Spec says 3–10; we enforce the top. */

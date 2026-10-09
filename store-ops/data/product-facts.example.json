@@ -1,0 +1,30 @@
+{
+  "linkable": [
+    { "handle": "drawer-organizers", "title": "Drawer organizers" },
+    { "handle": "desk-organizers", "title": "Desk organizers" },
+    { "handle": "undated-planners", "title": "Undated planners" }
+  ],
+  "pages": [
+    {
+      "kind": "collection",
+      "handle": "drawer-organizers-for-makeup",
+      "name": "Drawer organizers for makeup",
+      "keyword": "drawer organizer for makeup",
+      "facts": [
+        "Modular acrylic trays in three sizes; measured sizes on each product page",
+        "Trays are clear acrylic; no lids",
+        "Ships from the US warehouse"
+      ]
+    },
+    {
+      "kind": "guide",
+      "handle": "how-to-organize-a-small-desk",
+      "name": "How to organize a small desk",
+      "keyword": "how to organize a small desk",
+      "facts": [
+        "The store sells desk organizers, cable clips and a desk mat",
+        "The desk mat is 31.5 in x 15.7 in (80 x 40 cm), from the Printful product page"
+      ]
+    }
+  ]
+}

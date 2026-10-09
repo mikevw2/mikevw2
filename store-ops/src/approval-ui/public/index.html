@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Approval queue</title>
+<style>
+  :root { color-scheme: light; --ink:#1f1a17; --muted:#6b625c; --paper:#fbf8f3; --line:#e4ddd4; --ok:#2e7d4f; --no:#b3261e; }
+  body { margin:0; font: 15px/1.45 system-ui, sans-serif; color:var(--ink); background:var(--paper); }
+  header { padding: 16px 24px; border-bottom: 1px solid var(--line); display:flex; gap:24px; align-items:center; flex-wrap:wrap; }
+  header h1 { font-size: 18px; margin:0; }
+  .counts { color: var(--muted); font-size: 13px; }
+  .paused { background:#fde8e6; color:var(--no); padding:6px 10px; border-radius:8px; }
+  main { padding: 16px 24px; display:grid; gap:24px; grid-template-columns: 1fr; max-width: 1400px; }
+  @media (min-width: 1100px) { main { grid-template-columns: 1.2fr 1fr; } }
+  h2 { font-size: 16px; margin: 0 0 12px; }
+  .card { background:#fff; border:1px solid var(--line); border-radius:12px; padding:14px 16px; margin-bottom:12px; }
+  .meta { color:var(--muted); font-size:13px; margin-bottom:8px; }
+  .preview { border:1px solid var(--line); border-radius:8px; padding:12px; max-height:360px; overflow:auto; background:#fffdf9; }
+  .preview h2 { font-size:15px; } .preview h3 { font-size:14px; }
+  .seo { font-size:13px; margin:8px 0; } .seo b { color:var(--muted); font-weight:500; }
+  .warn { color: var(--no); font-size: 13px; }
+  .actions { display:flex; gap:8px; margin-top:10px; align-items:center; }
+  button { font: inherit; padding:6px 14px; border-radius:8px; border:1px solid var(--line); background:#fff; cursor:pointer; }
+  button.ok { background:var(--ok); color:#fff; border-color:var(--ok); } button.no { color:var(--no); }
+  input[type=text] { font:inherit; padding:6px 8px; border:1px solid var(--line); border-radius:8px; flex:1; min-width: 120px; }
+  .pin { display:grid; grid-template-columns: 160px 1fr; gap:14px; }
+  .pin img { width:160px; height:240px; object-fit:cover; border-radius:8px; border:1px solid var(--line); background:#eee; }
+  .empty { color:var(--muted); }
+  details summary { cursor:pointer; color:var(--muted); font-size:13px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Approval queue</h1>
+  <span class="counts" id="counts"></span>
+  <span id="paused"></span>
+  <button id="refresh">Refresh</button>
+</header>
+<main>
+  <section><h2>Content drafts</h2><div id="drafts"></div></section>
+  <section><h2>Pins</h2><div id="pins"></div></section>
+</main>
+<script>
+  const $ = (s, el = document) => el.querySelector(s);
+  const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
+  // Drafts are shown as rendered HTML so you can read them; they come from our own DB, but strip scripts anyway.
+  const safeHtml = (html) => String(html ?? "").replace(/<script[\s\S]*?<\/script>/gi, "").replace(/ on\w+="[^"]*"/gi, "");
+
+  async function load() {
+    const r = await fetch("/api/state"); const s = await r.json();
+    $("#counts").textContent = `approved drafts ${s.counts.drafts_approved ?? 0} · approved pins waiting ${s.counts.pins_approved ?? 0} · pins posted last 7d ${s.counts.pins_posted_7d ?? 0}`;
+    $("#paused").innerHTML = s.paused ? `<span class="paused">Poster PAUSED: ${esc(s.pausedReason)} <button id="unpause">Clear</button></span>` : "";
+    if (s.paused) $("#unpause").onclick = async () => { if (confirm("Clear the PAUSED flag? Only do this after you have looked at why it paused.")) { await fetch("/api/unpause", { method: "POST" }); load(); } };
+    $("#drafts").innerHTML = s.drafts.length ? s.drafts.map(draftCard).join("") : '<p class="empty">Nothing to review.</p>';
+    $("#pins").innerHTML = s.pins.length ? s.pins.map(pinCard).join("") : '<p class="empty">Nothing to review.</p>';
+    document.querySelectorAll("[data-act]").forEach((b) => b.onclick = () => act(b));
+  }
+  function draftCard(d) {
+    const faq = (d.faq_json || []).map((f) => `<h3>${esc(f.question)}</h3><p>${esc(f.answer)}</p>`).join("");
+    const links = (d.internal_links || []).map((l) => `<li>${esc(l.anchor_text)} → ${esc(l.target_handle)}</li>`).join("");
+    return `<div class="card">
+      <div class="meta">#${d.id} · ${esc(d.kind)} · ${esc(d.target_handle)} · ${new Date(d.created_at).toLocaleString()}</div>
+      <strong>${esc(d.title)}</strong>
+      <div class="seo"><b>seo_title</b> (${d.seo_title.length}/60): ${esc(d.seo_title)}<br><b>seo_description</b> (${d.seo_description.length}/155): ${esc(d.seo_description)}</div>
+      ${d.reviewer_notes ? `<div class="warn">${esc(d.reviewer_notes)}</div>` : ""}
+      <div class="preview">${safeHtml(d.body_html)}${faq ? `<h2>FAQ</h2>${faq}` : ""}${links ? `<h2>Suggested internal links</h2><ul>${links}</ul>` : ""}</div>
+      <details><summary>raw HTML</summary><pre style="white-space:pre-wrap;font-size:12px">${esc(d.body_html)}</pre></details>
+      <div class="actions">
+        <input type="text" placeholder="notes (optional)" id="n-d-${d.id}">
+        <button class="ok" data-act="approve" data-kind="drafts" data-id="${d.id}">Approve</button>
+        <button class="no" data-act="reject" data-kind="drafts" data-id="${d.id}">Reject</button>
+      </div>
+      <div class="meta">Approving marks the draft for you to fact-check and publish in Shopify admin; it does not publish by itself.</div>
+    </div>`;
+  }
+  function pinCard(p) {
+    return `<div class="card pin">
+      <img src="/api/pins/${p.id}/image" alt="${esc(p.alt_text)}">
+      <div>
+        <div class="meta">#${p.id} · ${esc(p.template)} · ${esc(p.board)} · hash ${esc(p.image_hash)}</div>
+        <strong>${esc(p.title)}</strong> <span class="meta">(${p.title.length}/100)</span>
+        <p>${esc(p.description)} <span class="meta">(${p.description.length}/500)</span></p>
+        <div class="meta"><a href="${esc(p.page_url)}" target="_blank" rel="noopener">${esc(p.page_url)}</a></div>
+        <div class="actions">
+          <input type="text" placeholder="notes (optional)" id="n-p-${p.id}">
+          <button class="ok" data-act="approve" data-kind="pins" data-id="${p.id}">Approve</button>
+          <button class="no" data-act="reject" data-kind="pins" data-id="${p.id}">Reject</button>
+        </div>
+      </div>
+    </div>`;
+  }
+  async function act(b) {
+    const kind = b.dataset.kind, id = b.dataset.id, act = b.dataset.act;
+    const notes = $(`#n-${kind === "drafts" ? "d" : "p"}-${id}`)?.value || null;
+    b.disabled = true;
+    const r = await fetch(`/api/${kind}/${id}/${act}`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ notes }) });
+    if (!r.ok) alert(`Failed: ${(await r.json()).error}`);
+    load();
+  }
+  $("#refresh").onclick = load;
+  load();
+</script>
+</body>
+</html>

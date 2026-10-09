@@ -18,11 +18,11 @@ def _cached(name, fn):
     return pd.read_csv(path, index_col=0, parse_dates=True)
 
 
-def _binance(sym):
+def _binance(sym, interval="1d"):
     rows, start = [], 0
     while True:
         r = requests.get("https://data-api.binance.vision/api/v3/klines",
-                         params={"symbol": sym + "USDT", "interval": "1d", "startTime": start, "limit": 1000}, timeout=30)
+                         params={"symbol": sym + "USDT", "interval": interval, "startTime": start, "limit": 1000}, timeout=30)
         r.raise_for_status()
         k = r.json()
         if not k:
@@ -36,6 +36,20 @@ def _binance(sym):
     df.columns = ["time", "open", "high", "low", "close", "volume"]
     df.index = pd.to_datetime(df.pop("time"), unit="ms")
     return df.astype(float)
+
+
+def crypto_hourly(sym):
+    return _cached(f"crypto_{sym}_1h", lambda: _binance(sym, "1h"))
+
+
+def fx_hourly(ticker, name):
+    """~2 years of hourly OHLC (Yahoo's intraday limit), UTC timestamps."""
+    import yfinance as yf
+    def get():
+        df = yf.download(ticker, period="729d", interval="1h", progress=False, auto_adjust=False).droplevel(1, axis=1)
+        df.index = df.index.tz_convert("UTC").tz_localize(None)
+        return df[["Open", "High", "Low", "Close"]]
+    return _cached(f"fx_{name}_1h", get)
 
 
 def crypto_closes():

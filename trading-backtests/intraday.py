@@ -23,7 +23,8 @@ def table(rows):
 # ---------- A) crypto on intraday bars ----------
 def crypto_bars(rule):
     px = pd.DataFrame({c: crypto_hourly(c)["close"] for c in ["BTC", "ETH"]})
-    return px.resample(rule, label="right", closed="right").last().dropna() if rule != "1h" else px
+    # Binance stamps bars by open time, so a left-closed bucket's last close is the period's true close
+    return px.resample(rule).last().dropna() if rule != "1h" else px
 
 
 def donchian(px):
@@ -111,8 +112,10 @@ def fx_rows():
     days = pd.bdate_range(d.index.min(), d.index.max())
     port = d.reindex(days).fillna(0).mean(axis=1)          # 1x notional per pair, equal weight
     w = pd.DataFrame({"x": (d.reindex(days).fillna(0) != 0).any(axis=1).astype(float)})
-    rows.append({"Strategy": "F4 London breakout (EUR, GBP, JPY)", "Period": f"{days[0].date()} to {days[-1].date()}",
-                 **bt.stats(port, w, 252)})
+    st = bt.stats(port, w, 252)
+    st["Trades/yr"] = sum(len(v) for v in daily.values()) / (len(days) / 252)
+    st["Exposure"] = np.nan   # intraday only; never held overnight
+    rows.append({"Strategy": "F4 London breakout (EUR, GBP, JPY)", "Period": f"{days[0].date()} to {days[-1].date()}", **st})
     return rows, pd.DataFrame(summary).set_index("Pair"), port
 
 

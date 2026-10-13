@@ -77,10 +77,14 @@ export function quote(q, business) {
   const tax = round(taxable * (business.pricing.tax_rate_pct ?? 0) / 100);
   const total = delivery.fee == null ? null : round(taxable + tax + delivery.fee);
   const deposit = round(lines.reduce((s, l) => s + l.deposit, 0));
+  const retainer = total == null ? null : round(total * (business.pricing.retainer_pct ?? 0) / 100);
   return {
     start: q.start, end: q.end, days: lines[0].days, lines,
     rentalSubtotal, bundleDiscount, addonsTotal, setupTotal, delivery, taxable, tax, total,
-    deposit, dueToReserve: deposit, dueBeforeEvent: total == null ? null : round(total),
+    deposit, retainer,
+    dueToReserve: retainer,                                   // non-refundable, credited to balance
+    dueBeforeEvent: total == null ? null : round(total - retainer),
+    balanceDueDaysBefore: business.pricing.balance_due_days_before ?? 14,
     manualReview: total == null,
   };
 }

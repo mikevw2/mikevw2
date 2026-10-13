@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { rentalDays, isWeekendSpan, priceItem, deliveryFee, quote, availability } from '../lib/pricing.js';
 
 const business = { service_area: { free_radius_miles: 25, per_mile_fee: 2, max_radius_miles: 150, round_trip: true },
-  pricing: { tax_rate_pct: 6, bundle: { min_items: 2, discount_pct: 10 }, weekend_days: [5, 6, 0] } };
+  pricing: { retainer_pct: 25, tax_rate_pct: 6, bundle: { min_items: 2, discount_pct: 10 }, weekend_days: [5, 6, 0] } };
 const phone = { id: 'phone', name: 'Phone', quantity: 1, pricing: { base_rate: 300, additional_day_rate: 75, weekend_rate: 350, deposit: 100, setup_fee: 0 },
   addons: [{ id: 'usb', name: 'USB', price: 40 }], requires: { delivery: false } };
 const wall = { id: 'wall', name: 'Wall', quantity: 1, pricing: { base_rate: 400, additional_day_rate: 100, weekend_rate: null, deposit: 150, setup_fee: 75 }, requires: { delivery: true } };
@@ -40,6 +40,8 @@ test('full quote with bundle, delivery, tax, deposit', () => {
   assert.equal(q.delivery.fee, 60);
   assert.equal(q.total, 849.7);
   assert.equal(q.deposit, 250);
+  assert.equal(q.retainer, 212.43);
+  assert.equal(q.dueBeforeEvent, 637.27);
   assert.equal(q.manualReview, false);
 });
 

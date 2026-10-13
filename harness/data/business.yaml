@@ -14,10 +14,12 @@ base:
   zip: "83301"
 service_area:
   free_radius_miles: 25          # delivery included within this many miles of base
-  per_mile_fee: 2.00             # per one-way mile beyond the free radius
+  per_mile_fee: 1.50             # per mile driven beyond the free radius (PROPOSED, pending approval)
   max_radius_miles: 150          # beyond this, quote manually
   round_trip: true               # charge per-mile both ways
 pricing:
+  retainer_pct: 25               # non-refundable booking retainer, credited to the balance
+  balance_due_days_before: 14
   tax_rate_pct: 6.0              # Idaho sales tax applies to tangible rentals; confirm with accountant
   bundle:
     min_items: 2

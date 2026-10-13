@@ -29,5 +29,6 @@ for (const l of q.lines) {
 if (q.bundleDiscount) console.log(`  Bundle discount: -${$(q.bundleDiscount)}`);
 console.log(`  Delivery: ${$(q.delivery.fee)} (${q.delivery.note})`);
 console.log(`  Tax: ${$(q.tax)}`);
-console.log(`  TOTAL: ${$(q.total)}   Refundable deposit: ${$(q.deposit)}`);
+console.log(`  TOTAL: ${$(q.total)}`);
+console.log(`  Due to reserve (retainer): ${$(q.retainer)}   Balance ${q.balanceDueDaysBefore} days before: ${$(q.dueBeforeEvent)}   Refundable damage deposit: ${$(q.deposit)}`);
 if (q.manualReview) console.log('  Needs manual review (outside delivery radius).');

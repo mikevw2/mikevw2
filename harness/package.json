@@ -1,0 +1,22 @@
+{
+  "name": "harness",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Claude Code harness: skills, hooks, deterministic tools, and routines for rental/web and trading workflows",
+  "type": "module",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "test": "node --test \"test/**/*.test.js\"",
+    "size": "node scripts/size.js",
+    "econ": "node scripts/econ.js",
+    "validate": "node scripts/validate.js",
+    "qa": "node scripts/visual-qa.js",
+    "check": "npm test && node scripts/validate.js data/properties data/journal"
+  },
+  "dependencies": {
+    "yaml": "^2.6.1"
+  },
+  "devDependencies": {
+    "playwright": "^1.56.0"
+  }
+}

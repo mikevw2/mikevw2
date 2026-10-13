@@ -1,0 +1,8 @@
+node_modules/
+qa/
+!qa/.gitkeep
+data/journal/.broker-log.jsonl
+.env
+.env.*
+*.log
+.DS_Store

@@ -1,0 +1,23 @@
+# Trading risk rules. Enforced by .claude/hooks/thesis-gate.js and trade-guard.js and by scripts/size.js.
+# Change these deliberately, in a commit, with a line in docs/decisions/. Never "for this one trade".
+
+account_equity: 25000          # used for sizing when a thesis doesn't override account_equity
+default_risk_pct: 0.5          # default % of equity risked per trade
+max_risk_per_trade_pct: 1.0    # hard ceiling per trade
+max_open_risk_pct: 4.0         # sum of open-position risk (enforced by journal-review for now)
+max_position_pct: 25           # position value cap as % of equity
+min_reward_risk: 2.0           # reward:risk to first target
+daily_loss_stop_pct: 3.0       # stop trading for the day past this
+max_trades_per_day: 3
+
+live_enabled: false            # false = every broker write is blocked unless PAPER=1 / paper:true
+live_confirm_window_min: 10    # when live_enabled, a touch of .claude/CONFIRM_LIVE is valid this long
+broker_tool_prefixes:          # MCP tool-name prefixes treated as broker calls by trade-guard
+  - mcp__ibkr
+  - mcp__interactive
+  - mcp__alpaca
+  - mcp__tradier
+  - mcp__coinbase
+  - mcp__binance
+  - mcp__kraken
+  - mcp__hyperliquid

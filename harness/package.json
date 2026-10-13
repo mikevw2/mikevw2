@@ -8,10 +8,10 @@
   "scripts": {
     "test": "node --test \"test/**/*.test.js\"",
     "size": "node scripts/size.js",
-    "econ": "node scripts/econ.js",
+    "quote": "node scripts/quote.js",
     "validate": "node scripts/validate.js",
     "qa": "node scripts/visual-qa.js",
-    "check": "npm test && node scripts/validate.js data/properties data/journal"
+    "check": "npm test && node scripts/validate.js data/business.yaml data/inventory data/journal"
   },
   "dependencies": {
     "yaml": "^2.6.1"

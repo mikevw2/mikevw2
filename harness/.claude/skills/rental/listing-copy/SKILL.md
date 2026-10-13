@@ -1,25 +1,26 @@
 ---
 name: listing-copy
-description: Write or refresh rental listing copy (Zillow, Facebook Marketplace, Airbnb, VRBO, direct site) from a property YAML in data/properties/. Use when the user asks for a listing, ad, description, headline, or to refresh/seasonalize existing copy.
+description: Write or refresh copy for a rental item (website card and detail page, Facebook Marketplace, Instagram caption, wedding-vendor directory profile) from data/inventory/<id>.yaml and data/business.yaml. Use when the user asks for a description, listing, caption, headline, or profile text.
 ---
 
 # listing-copy
 
-Source of truth is `data/properties/<id>.yaml`. Never introduce a fact that isn't in it; if the
-copy needs one, add it to the YAML (ask the user) and then write.
+Source of truth is `data/inventory/<id>.yaml` plus `data/business.yaml`. Never introduce a fact
+(size, material, what's included, price, radius) that isn't in them. If the copy needs one, ask,
+add it to the YAML, then write.
 
-## Output per platform
-- **Zillow / long-term**: headline (<= 70 chars), 120-180 word description, bullets for specs,
-  pet/parking/utilities lines, application steps. Plain, specific, no hype adjectives.
-- **Facebook Marketplace**: 60-100 words, first line carries rent + beds/baths + area, then 4-6
-  bullets, then "message for a showing".
-- **Airbnb / VRBO (str)**: title (<= 50 chars), summary (first 400 chars matter), "the space",
-  "guest access", "other things to note", house rules from YAML.
-- **Direct site**: hero line, 3 proof bullets, CTA.
+## Outputs
+- **Site card**: headline (<= 60 chars), one proof line, "from $X" using `pricing.base_rate`.
+- **Site detail page**: 90-140 word description, "what's included" bullets, specs table rows,
+  add-ons with prices, delivery and deposit lines pulled from business policies, one CTA.
+- **Facebook Marketplace / groups**: 60-100 words, first line = item + area + "from $X", then
+  4-6 bullets, then "message to check your date".
+- **Instagram caption**: 1-2 sentences, 3-5 relevant local hashtags (Twin Falls, Magic Valley,
+  Idaho wedding), no hashtag walls.
+- **Vendor directory profile** (The Knot, Zola, WeddingWire): 150-200 words about the business
+  using `business.yaml`, then one line per item.
 
 ## Rules
-- Fair housing: describe the property, never the ideal tenant. No "perfect for families",
-  "young professionals", "quiet Christian neighborhood", "no kids", etc.
-- Use `nearby` items as concrete drive/walk times, not "close to everything".
-- Produce two headline variants and say which to test first and why.
-- Save output to `data/properties/<id>.listing.md` so it can be diffed next refresh.
+- Plain and specific. No "stunning", "perfect for", "elevate".
+- Two headline variants; say which to test first and why.
+- Save to `data/inventory/<id>.copy.md` so the next refresh can diff.

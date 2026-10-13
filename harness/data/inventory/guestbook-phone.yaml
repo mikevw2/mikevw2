@@ -1,0 +1,27 @@
+id: guestbook-phone
+name: Audio & Video Guestbook Phone
+category: guestbook
+status: active
+quantity: 1
+headline: "Guests pick up the phone and leave you a message you keep forever"
+description: "TODO after photos and model details from Mike. Vintage-style phone; guests lift the handset, hear a custom greeting, and record a voice (and video, if the model supports it) message. Recordings delivered after the event."
+specs:
+  power: "standard outlet"
+  records_video: true            # TODO confirm
+  greeting: "custom recorded greeting included"
+whats_included:
+  - Phone and stand/sign        # TODO confirm
+  - Custom greeting
+  - Digital delivery of all recordings
+photos: []                       # TODO pull from existing phone site
+pricing:
+  base_rate: 0                   # TODO from rate research
+  additional_day_rate: 0
+  weekend_rate: null
+  deposit: 0
+  setup_fee: 0
+addons:
+  - { id: keepsake-usb, name: "Keepsake USB with all recordings", price: 0 }
+  - { id: highlight-reel, name: "Edited highlight reel", price: 0 }
+requires: { delivery: false, power: true, indoor_only: false }
+notes: ""

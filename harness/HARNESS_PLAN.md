@@ -101,28 +101,23 @@ harness/
    Google Business Profile checklist, local citation list for Twin Falls / Magic Valley.
 6. **deploy** — Netlify or Cloudflare Pages connector + GitHub Actions. Preview URL per PR.
 
-### Rental skills
-1. **listing-copy** — per-platform listings (Airbnb, VRBO, Zillow, Facebook Marketplace) from the
-   property YAML. Variants for A/B. Seasonal refresh routine.
-2. **guest-comms / tenant-comms** — message library with tone rules: inquiry, confirmation,
-   check-in, mid-stay, checkout, review ask, late rent, renewal, move-out. Sequences pushed to
-   MailerLite/Mailchimp once reconnected.
-3. **maintenance-triage** — intake to severity to vendor to work order to closeout, with a
-   corrective-action register like SafeOps. Starts from Property Management Operator plugin.
-4. **unit-economics** — xlsx: per-unit P&L, occupancy, ADR/RevPAR (STR) or rent roll/vacancy (LTR),
-   cap rate, cash-on-cash, DSCR. Deal analyzer for the next acquisition. Formulas live in a Python
-   module inside the rental-data MCP server, never in model prose.
-5. **owner-report** — monthly routine: pull numbers (Sheets/Airtable/QuickBooks), render a
-   dashboard Artifact (dataviz skill) and a PDF.
-6. **lease-docs** — docx templates for Idaho with a compliance checklist and a "needs attorney
-   review" flag on any clause I generate rather than copy.
-7. **market-watch** — weekly routine: comps and rent trends via web search + Playwright, appended
-   to a Sheet, summarized with deltas.
+### Rental skills (event rentals: guestbook phone, white flower wall, white flower arch)
+1. **quote** — deterministic pricing via `lib/pricing.js`: day/weekend rates, bundle discount,
+   delivery mileage, tax, refundable deposit, availability with turnaround buffer.
+2. **listing-copy** — site cards/pages, Marketplace, Instagram, vendor-directory copy from
+   `data/inventory/*.yaml` and `data/business.yaml`.
+3. **booking-intake** — Netlify form submission to Airtable row to confirmation email, with a
+   Stripe deposit link; a hold expires per `booking.hold_hours`.
+4. **customer-comms** — inquiry reply, quote, hold, deposit received, week-of logistics,
+   day-after thank-you + review ask, deposit return notice.
+5. **ops-checklists** — delivery/setup/teardown checklists per item, damage inspection log.
+6. **monthly-report** — bookings, revenue, utilization per item, lead sources; dashboard Artifact.
+7. **market-watch** — quarterly competitor rate scan appended to a sheet.
 
 ### Products from this track
-- **Rental Ops plugin** for small landlords: the skills above + rental-data MCP over Sheets/Airtable.
-- **Vacation-rental site kit**: static, offline-first template with Stripe deposit flow, direct
-  booking page, and the visual-qa harness bundled.
+- **Event Rental Ops plugin** for small rental businesses: quote engine + skills + Airtable schema.
+- **Rental site kit**: static Netlify template with catalog, availability, booking form, Stripe
+  deposit flow, and the visual-qa harness bundled.
 - **Owner dashboard** as a hosted Artifact with a shared database: a multi-tenant product.
 
 ---
@@ -201,8 +196,8 @@ Hard rules baked into the harness, not left to the model:
 
 ## 7. Open questions (answer whenever; nothing above blocks on them)
 
-1. Rentals: short-term, long-term, or mixed? How many units? Where does the data live today
-   (Sheets, spreadsheet, PM software)?
+1. Rentals: ANSWERED 2026-10-13. Event rentals (guestbook phone, white flower wall, white flower
+   arch). Host Netlify, payments Stripe, bookings Airtable. Rates, photos, policies still needed.
 2. Web: current site and host, if any? Preferred stack: self-contained static like SafeOps, or
    Astro/Next with a CMS?
 3. Trading: instruments (equities, options, futures, crypto)? Broker? Discretionary or systematic?

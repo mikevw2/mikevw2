@@ -20,7 +20,7 @@ export function expandPaths(paths, ext) {
     const abs = resolve(p);
     if (statSync(abs).isDirectory()) {
       for (const f of readdirSync(abs)) if (f.endsWith(ext) && !f.startsWith('_') && !f.startsWith('.')) out.push(join(abs, f));
-    } else out.push(abs);
+    } else if (abs.endsWith(ext)) out.push(abs);
   }
   return out;
 }

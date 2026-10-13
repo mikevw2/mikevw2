@@ -1,10 +1,10 @@
 #!/usr/bin/env node
-// Validate property fact sheets and trade theses.
-//   node scripts/validate.js data/properties data/journal
+// Validate business file, inventory items, and trade theses.
+//   node scripts/validate.js data/business.yaml data/inventory data/journal
 //   node scripts/validate.js data/journal/2026-10-13-XYZ.md
 import { readFileSync } from 'node:fs';
 import { validateThesis } from '../lib/thesis.js';
-import { validateProperty } from '../lib/property.js';
+import { validateItem, validateBusiness } from '../lib/inventory.js';
 import { readYaml, loadRisk, expandPaths } from '../lib/io.js';
 
 const paths = process.argv.slice(2);
@@ -20,7 +20,8 @@ const report = (f, r) => {
   if (!r.ok) failed++;
 };
 for (const f of [...expandPaths(paths, '.yaml'), ...expandPaths(paths, '.md')]) {
-  if (f.endsWith('.yaml')) report(f, validateProperty(readYaml(f)));
+  if (/business\.yaml$/.test(f)) report(f, validateBusiness(readYaml(f)));
+  else if (/[\\/]inventory[\\/].*\.yaml$/.test(f)) report(f, validateItem(readYaml(f)));
   else if (/[\\/]journal[\\/]/.test(f) && !/readme\.md$/i.test(f)) report(f, validateThesis(readFileSync(f, 'utf8'), risk));
 }
 console.log(`\n${checked} checked, ${failed} failed`);

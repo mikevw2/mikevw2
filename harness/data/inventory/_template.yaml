@@ -1,0 +1,23 @@
+# Inventory item. One file per rentable item (or per identical unit set via quantity).
+id: kebab-case-id
+name: Human name
+category: decor                  # decor | guestbook | lighting | furniture | other
+status: active                   # active | hidden | retired
+quantity: 1
+headline: ""                     # one line for cards and listings
+description: ""                  # 60-120 words, facts only
+specs: {}                        # e.g. { width_ft: 8, height_ft: 8, weight_lb: 60, power: "none" }
+whats_included: []
+photos: []                       # paths under site/assets/<id>/ or URLs
+pricing:
+  base_rate: 0                   # first event day
+  additional_day_rate: 0         # each further day
+  weekend_rate: null             # optional flat Fri–Sun price; used if lower than computed
+  deposit: 0                     # refundable damage deposit
+  setup_fee: 0                   # delivery+setup labor if applicable (delivery mileage is separate)
+addons: []                       # [{ id, name, price }]
+requires:
+  delivery: false                # true = we deliver/set up; false = pickup/ship ok
+  power: false
+  indoor_only: false
+notes: ""

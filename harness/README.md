@@ -2,7 +2,7 @@
 
 A Claude Code harness for two lines of work:
 
-1. **Web design + rental business** (sites, listings, guest/tenant comms, unit economics, owner reporting)
+1. **Web design + event rental business** (website, catalog, quotes, bookings, customer comms)
 2. **Trading** (thesis, deterministic sizing, risk gates, journal, review)
 
 The model supplies judgment and language. This repo supplies memory, enforcement,
@@ -24,7 +24,8 @@ lib/                    deterministic modules (pure functions, unit tested)
 scripts/                CLIs over lib/ (what hooks, routines, and you call)
 data/
   risk.yaml             trading rules the hooks enforce
-  properties/           one YAML fact sheet per rental unit (source of truth)
+  business.yaml         business facts, service area, tax, bundle rules, policies
+  inventory/            one YAML per rentable item (source of truth for site + quotes)
   journal/              one markdown file per trade thesis
 docs/decisions/         ADRs: why things are the way they are
 mcp/                    custom MCP servers (rental-data, market-data) — phase 2
@@ -40,8 +41,8 @@ cd harness
 npm install
 npm test                       # unit tests for lib/
 npm run size -- --entry 100 --stop 95 --targets 110,120
-npm run econ -- data/properties/example-duplex.yaml
-npm run validate -- data/journal/_template.md
+npm run quote -- --items guestbook-phone,flower-wall-white --start 2026-06-12 --end 2026-06-14 --miles 40
+npm run validate -- data/business.yaml data/inventory data/journal
 npm run qa -- https://example.com
 ```
 
@@ -49,7 +50,7 @@ Open this folder as the project root in Claude Code so `.claude/settings.json` h
 
 ## Conventions
 
-- Anything numeric that matters (position size, risk, P&L, cap rate) is computed in `lib/` and
+- Anything numeric that matters (position size, risk, quotes, delivery fees, tax) is computed in `lib/` and
   covered by a test. Claude narrates results; it never does the arithmetic in prose.
 - Every rule a hook enforces is also written in plain English in `CLAUDE.md`.
 - New skill: `.claude/skills/<track>/<name>/SKILL.md` with frontmatter `name` and `description`.

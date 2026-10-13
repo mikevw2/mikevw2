@@ -1,0 +1,37 @@
+# Business-level facts and policies. Source of truth for the site, quotes, and comms.
+# Fields marked TODO are waiting on Mike. Claude must not invent them.
+name: "TODO business name"
+tagline: ""
+domain: "TODO"
+contact:
+  email: "TODO"
+  phone: "TODO"
+  instagram: ""
+  facebook: ""
+base:
+  city: Twin Falls
+  state: ID
+  zip: "83301"
+service_area:
+  free_radius_miles: 25          # delivery included within this many miles of base
+  per_mile_fee: 2.00             # per one-way mile beyond the free radius
+  max_radius_miles: 150          # beyond this, quote manually
+  round_trip: true               # charge per-mile both ways
+pricing:
+  tax_rate_pct: 6.0              # Idaho sales tax applies to tangible rentals; confirm with accountant
+  bundle:
+    min_items: 2
+    discount_pct: 10
+  weekend_days: [5, 6, 0]        # Fri, Sat, Sun (JS getDay)
+  min_rental_days: 1
+policies:
+  deposit: "Refundable damage deposit per item, returned within 5 business days of pickup if items are undamaged."
+  cancellation: "TODO (draft: full refund 30+ days out, 50% 14-29 days, none under 14 days; one free reschedule within 12 months)"
+  setup: "Flower wall and arch are delivered and set up by us; the guestbook phone ships or is handed off and needs only a power outlet."
+  weather: "TODO"
+booking:
+  hold_hours: 48                 # a quote hold expires after this long without deposit
+  turnaround_days: 1             # buffer between bookings of the same item
+  airtable:
+    base_id: ""                  # filled after the Airtable connector is authorized
+    table: Bookings

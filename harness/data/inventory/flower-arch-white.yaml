@@ -1,0 +1,14 @@
+id: flower-arch-white
+name: White Flower Arch
+category: decor
+status: active
+quantity: 1
+headline: "A white floral arch for the ceremony or the entrance"
+description: "TODO dimensions and materials from Mike."
+specs: { width_ft: 0, height_ft: 0, florals: "artificial, white", frame: "" }
+whats_included: [Arch, Base weights, Delivery and setup within service area]
+photos: []
+pricing: { base_rate: 0, additional_day_rate: 0, weekend_rate: null, deposit: 0, setup_fee: 0 }
+addons: []
+requires: { delivery: true, power: false, indoor_only: false }
+notes: ""

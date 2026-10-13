@@ -1,0 +1,15 @@
+id: flower-wall-white
+name: White Flower Wall
+category: decor
+status: active
+quantity: 1
+headline: "A full white floral backdrop for ceremonies, photo moments, and head tables"
+description: "TODO dimensions and materials from Mike."
+specs: { width_ft: 0, height_ft: 0, florals: "artificial, white", frame: "" }
+whats_included: [Wall panels, Freestanding frame, Delivery and setup within service area]
+photos: []
+pricing: { base_rate: 0, additional_day_rate: 0, weekend_rate: null, deposit: 0, setup_fee: 0 }
+addons:
+  - { id: neon-sign, name: "Neon sign mount", price: 0 }
+requires: { delivery: true, power: false, indoor_only: false }
+notes: ""

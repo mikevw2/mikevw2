@@ -8,8 +8,10 @@ description: "TODO dimensions and materials from Mike."
 specs: { width_ft: 0, height_ft: 0, florals: "artificial, white", frame: "" }
 whats_included: [Wall panels, Freestanding frame, Delivery and setup within service area]
 photos: []
-pricing: { base_rate: 0, additional_day_rate: 0, weekend_rate: null, deposit: 0, setup_fee: 0 }
+pricing: { base_rate: 250, additional_day_rate: 100, weekend_rate: 300, deposit: 100, setup_fee: 0 }
 addons:
-  - { id: neon-sign, name: "Neon sign mount", price: 0 }
+  - { id: neon-sign, name: "Neon sign mount", price: 75 }
+  - { id: floral-upgrade, name: "Floral upgrade (greenery or color accents)", price: 50 }
+  - { id: relocation, name: "Mid-event relocation (arranged in advance)", price: 75 }
 requires: { delivery: true, power: false, indoor_only: false }
-notes: ""
+notes: "Rates approved 2026-10-13."

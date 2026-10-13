@@ -1,4 +1,5 @@
 # Business-level facts and policies. Source of truth for the site, quotes, and comms.
+# Rates and policies approved by Mike 2026-10-13 (see docs/research/2026-10-rate-research.md).
 # Fields marked TODO are waiting on Mike. Claude must not invent them.
 name: "TODO business name"
 tagline: ""
@@ -13,26 +14,40 @@ base:
   state: ID
   zip: "83301"
 service_area:
-  free_radius_miles: 25          # delivery included within this many miles of base
-  per_mile_fee: 1.50             # per mile driven beyond the free radius (PROPOSED, pending approval)
-  max_radius_miles: 150          # beyond this, quote manually
-  round_trip: true               # charge per-mile both ways
+  free_radius_miles: 25          # delivery included within this many miles of Twin Falls (Jerome, Kimberly, Filer, Buhl)
+  per_mile_fee: 1.50             # per mile driven beyond the free radius
+  round_trip: true               # bill miles both ways
+  max_radius_miles: 100          # beyond this, quote manually unless the venue is in a flat zone
+  flat_zones:                    # matched by city name (case-insensitive) before mileage math
+    - { name: "Boise / Pocatello / Idaho Falls", cities: [Boise, Meridian, Nampa, Eagle, Pocatello, Idaho Falls], fee: 175, min_order: 0 }
+    - { name: "Logan / Salt Lake", cities: [Logan, Ogden, Salt Lake City, Sandy, Provo, Orem], fee: 250, min_order: 600 }
 pricing:
   retainer_pct: 25               # non-refundable booking retainer, credited to the balance
   balance_due_days_before: 14
-  tax_rate_pct: 6.0              # Idaho sales tax applies to tangible rentals; confirm with accountant
-  bundle:
+  tax_rate_pct: 6.0              # Idaho sales tax on tangible rentals; confirm with accountant
+  weekend_days: [5, 6, 0, 1]     # Fri, Sat, Sun, Mon (JS getDay); a weekend span is <= 4 days inside these
+  weekend_max_days: 4
+  min_rental_days: 1
+  bundle:                        # fallback when no named bundle matches
     min_items: 2
     discount_pct: 10
-  weekend_days: [5, 6, 0]        # Fri, Sat, Sun (JS getDay)
-  min_rental_days: 1
+  bundles:                       # named bundles win over the percentage
+    - { id: all-three, name: "Phone + Wall + Arch", items: [guestbook-phone, flower-wall-white, flower-arch-white], price: 699, weekend_price: 799 }
+  seasonal:
+    - { id: off-season, name: "Off-season (Nov–Apr)", months: [11, 12, 1, 2, 3, 4], discount_pct: 15 }
+  late_teardown_per_hour: 50     # after 10 pm; policy text only, billed after the event
 policies:
-  deposit: "Refundable damage deposit per item, returned within 5 business days of pickup if items are undamaged."
-  cancellation: "TODO (draft: full refund 30+ days out, 50% 14-29 days, none under 14 days; one free reschedule within 12 months)"
-  setup: "Flower wall and arch are delivered and set up by us; the guestbook phone ships or is handed off and needs only a power outlet."
+  retainer: "A 25% retainer reserves your date. It is non-refundable but credited to your balance, and transferable to another date within 12 months."
+  balance: "The remaining balance is due 14 days before your event."
+  damage_deposit: "Flower wall and arch carry a $100 refundable damage hold, returned within 5 business days of pickup if undamaged. The guestbook phone carries a $15 damage waiver, or liability up to $500 without it."
+  cancellation: "30+ days before the event: refund of everything paid except the retainer, which stays transferable for 12 months. 14–29 days: 50% refund. Under 14 days: no refund. One free date change when requested 21+ days out."
+  delivery: "Delivery and setup are free within 25 miles of Twin Falls. Beyond that, $1.50 per mile driven. Flat $175 to Boise, Pocatello, and Idaho Falls. Flat $250 to Logan and Salt Lake with a $600 minimum order. Venues over 100 miles are quoted individually."
+  setup: "We arrive about 60 minutes before your start time. Flower wall and arch are set up and taken down by us. The guestbook phone needs a standard outlet and a small table."
+  teardown: "Teardown by 10 pm is included. After 10 pm, $50 per hour. Moving a wall or arch mid-event is $75 and must be arranged in advance."
+  late_return: "Items kept past the agreed return are billed 10% of the rental per day."
   weather: "TODO"
 booking:
-  hold_hours: 48                 # a quote hold expires after this long without deposit
+  hold_hours: 48                 # a quote hold expires after this long without the retainer
   turnaround_days: 1             # buffer between bookings of the same item
   airtable:
     base_id: ""                  # filled after the Airtable connector is authorized

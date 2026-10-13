@@ -15,13 +15,15 @@ whats_included:
   - Digital delivery of all recordings
 photos: []                       # TODO pull from existing phone site
 pricing:
-  base_rate: 0                   # TODO from rate research
-  additional_day_rate: 0
-  weekend_rate: null
-  deposit: 0
+  base_rate: 225                 # one event, up to 8 hrs
+  additional_day_rate: 75
+  weekend_rate: 275              # Fri–Mon
+  deposit: 0                     # no hold; see damage-waiver add-on
   setup_fee: 0
 addons:
-  - { id: keepsake-usb, name: "Keepsake USB with all recordings", price: 0 }
-  - { id: highlight-reel, name: "Edited highlight reel", price: 0 }
+  - { id: video-model, name: "Video-recording model", price: 50 }
+  - { id: damage-waiver, name: "Damage waiver (otherwise liable up to $500)", price: 15 }
+  - { id: keepsake-usb, name: "Keepsake USB with all recordings", price: 35 }
+  - { id: sign, name: "Instruction sign", price: 25 }
 requires: { delivery: false, power: true, indoor_only: false }
-notes: ""
+notes: "Rates approved 2026-10-13."

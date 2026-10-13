@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // Quote CLI.
-//   node scripts/quote.js --items guestbook-phone,flower-wall-white --start 2026-06-12 --end 2026-06-14 [--miles 40] [--addons keepsake-usb] [--json]
+//   node scripts/quote.js --items guestbook-phone,flower-wall-white --start 2026-06-12 --end 2026-06-14 [--miles 40 | --city Boise] [--addons keepsake-usb] [--json]
 import { readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { quote } from '../lib/pricing.js';
@@ -19,16 +19,17 @@ const items = args.items.split(',').map(id => {
   const item = inventory[id]; if (!item) { console.error(`unknown item ${id}. Known: ${Object.keys(inventory).join(', ')}`); process.exit(1); }
   return { item, addons: addons.filter(a => (item.addons ?? []).some(x => x.id === a)) };
 });
-const q = quote({ items, start: args.start, end: args.end, miles: args.miles ? Number(args.miles) : undefined }, business);
+const q = quote({ items, start: args.start, end: args.end, miles: args.miles ? Number(args.miles) : undefined, city: args.city || undefined }, business);
 if (json) { console.log(JSON.stringify(q, null, 2)); process.exit(); }
 const $ = (n) => n == null ? 'manual' : n.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
 console.log(`Quote ${q.start} → ${q.end} (${q.days} day${q.days > 1 ? 's' : ''})`);
 for (const l of q.lines) {
   console.log(`  ${l.name}: ${$(l.rental)} (${l.rateApplied})${l.setupFee ? ` + setup ${$(l.setupFee)}` : ''}${l.addons.length ? ` + add-ons ${$(l.addonsTotal)}` : ''}`);
 }
-if (q.bundleDiscount) console.log(`  Bundle discount: -${$(q.bundleDiscount)}`);
+if (q.bundle) console.log(`  ${q.bundle.name}: -${$(q.bundleDiscount)}`);
+if (q.seasonal) console.log(`  ${q.seasonal.name} ${q.seasonal.pct}%: -${$(q.seasonalDiscount)}`);
 console.log(`  Delivery: ${$(q.delivery.fee)} (${q.delivery.note})`);
 console.log(`  Tax: ${$(q.tax)}`);
 console.log(`  TOTAL: ${$(q.total)}`);
 console.log(`  Due to reserve (retainer): ${$(q.retainer)}   Balance ${q.balanceDueDaysBefore} days before: ${$(q.dueBeforeEvent)}   Refundable damage deposit: ${$(q.deposit)}`);
-if (q.manualReview) console.log('  Needs manual review (outside delivery radius).');
+if (q.manualReview) console.log(`  Needs manual review: ${q.manualReviewReason}`);

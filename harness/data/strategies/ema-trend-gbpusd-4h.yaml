@@ -1,0 +1,9 @@
+id: ema-trend-gbpusd-4h
+strategy: ema_trend
+market: { exchange: yfinance, product: GBPUSD=X, timeframe: 4h }
+history: { start: "2023-10-01" }
+params: { fast: 20, slow: 50, trend: 200, atr_period: 14, atr_mult: 3.0, allow_short: true }
+grid: { fast: [10, 20, 30], slow: [50, 100], atr_mult: [2.0, 3.0, 4.0] }
+costs: { fee_bps: 1.0, slippage_bps: 0.5 }
+risk: { equity: 10000, risk_pct: 1.0, max_leverage: 5.0, trailing: false }
+walkforward: { train_months: 9, test_months: 3, min_trades: 10 }

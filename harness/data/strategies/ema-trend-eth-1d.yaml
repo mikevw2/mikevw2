@@ -1,0 +1,9 @@
+id: ema-trend-eth-1d
+strategy: ema_trend
+market: { exchange: coinbase, product: ETH-USD, timeframe: 1d }
+history: { start: "2017-01-01" }
+params: { fast: 20, slow: 50, trend: 200, atr_period: 14, atr_mult: 3.0, allow_short: true }
+grid: { fast: [10, 20, 30], slow: [50, 100], atr_mult: [2.0, 3.0, 4.0] }
+costs: { fee_bps: 20, slippage_bps: 5 }
+risk: { equity: 10000, risk_pct: 1.0, max_leverage: 2.0, trailing: false }
+walkforward: { train_months: 24, test_months: 6, min_trades: 8 }

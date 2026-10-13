@@ -40,12 +40,14 @@ def _slip(price, side, slippage_bps, entering):
     return price * (1 + adverse * slippage_bps / 1e4)
 
 
-def run(df: pd.DataFrame, sig: pd.DataFrame, costs: Costs = Costs(), risk: Risk = Risk(), params: dict | None = None) -> Result:
+def run(df: pd.DataFrame, sig: pd.DataFrame, costs: Costs = Costs(), risk: Risk = Risk(), params: dict | None = None, trade_from=None) -> Result:
+    """trade_from: timestamp before which no position is opened (used for walk-forward warm-up)."""
     o, h, l, c = (df[k].to_numpy(float) for k in ("open", "high", "low", "close"))
     signal = sig["signal"].to_numpy(int)
     stop0 = sig["stop"].to_numpy(float)
     atr = sig["atr"].to_numpy(float)
     n = len(df)
+    first_i = int(df.index.searchsorted(pd.Timestamp(trade_from))) if trade_from is not None else 0
     cash = risk.equity
     pos = 0; units = 0.0; entry = 0.0; stop = math.nan; entry_i = -1; init_risk = 0.0
     blocked = 0   # direction we were stopped out of; no re-entry until the signal leaves it
@@ -81,7 +83,7 @@ def run(df: pd.DataFrame, sig: pd.DataFrame, costs: Costs = Costs(), risk: Risk 
             blocked = 0
         if pos != 0 and want != pos:
             close_trade(i, o[i], "signal")
-        if pos == 0 and want != 0 and want != blocked and not math.isnan(stop0[i - 1]):
+        if pos == 0 and want != 0 and want != blocked and i >= first_i and not math.isnan(stop0[i - 1]):
             px = _slip(o[i], want, costs.slippage_bps, entering=True)
             dist = abs(px - stop0[i - 1])
             if dist > 0:

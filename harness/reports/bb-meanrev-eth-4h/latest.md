@@ -9,7 +9,7 @@ Train 12 mo / test 3 mo, parameters re-selected each window from the grid.
 
 | trades | expectancy_r | win_rate | profit_factor | sharpe | max_drawdown | cagr | total_return | exposure |
 |---|---|---|---|---|---|---|---|---|
-| 22 | -0.0921 | 0.5455 | 0.79 | -0.29 | -0.0577 | -0.0056 | -0.0322 | 0.0177 |
+| 22 | -0.0921 | 0.5455 | 0.8 | -0.29 | -0.0577 | -0.0056 | -0.0322 | 0.0177 |
 
 
 ### Windows

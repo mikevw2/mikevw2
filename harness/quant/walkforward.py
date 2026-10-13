@@ -12,9 +12,9 @@ def grid_points(grid: dict) -> list[dict]:
     return [dict(zip(keys, vals)) for vals in itertools.product(*(grid[k] for k in keys))]
 
 
-def run_once(df, strategy, params, costs, risk, timeframe):
+def run_once(df, strategy, params, costs, risk, timeframe, trade_from=None):
     sig = strategies.REGISTRY[strategy](df, **params)
-    res = engine.run(df, sig, costs, risk, params)
+    res = engine.run(df, sig, costs, risk, params, trade_from=trade_from)
     return res, st.summarize(res.equity, res.trades, timeframe)
 
 
@@ -52,12 +52,10 @@ def walk_forward(df, strategy, base_params, grid, costs, risk, timeframe, train_
                 best, best_score, best_stats = p, sc, s
         warm = df[(df.index < t1)].tail(warmup_bars)
         seg = pd.concat([warm, test_full])
-        res, _ = run_once(seg, strategy, best, costs, engine.Risk(**{**risk.__dict__, "equity": level}), timeframe)
+        res, _ = run_once(seg, strategy, best, costs, engine.Risk(**{**risk.__dict__, "equity": level}), timeframe, trade_from=t1)
         eq = res.equity[res.equity.index >= t1]
-        tr = res.trades[res.trades.entry_time >= t1] if not res.trades.empty else res.trades
-        # equity at t1 is `level`; rebase so warm-up trades don't leak into OOS
+        tr = res.trades   # engine opened nothing before t1, so every trade is out-of-sample
         if len(eq):
-            eq = eq / eq.iloc[0] * level
             level = float(eq.iloc[-1])
             oos_equity_parts.append(eq)
         if not tr.empty:

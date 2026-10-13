@@ -70,6 +70,54 @@ def cache_path(product: str, timeframe: str) -> Path:
     return CACHE / f"coinbase_{product}_{timeframe}.csv"
 
 
+YF_NATIVE = {"1h": "1h", "1d": "1d"}
+
+
+def fetch_yfinance(symbol: str, timeframe: str, start, end=None) -> pd.DataFrame:
+    """Yahoo Finance via yfinance. 1h is limited to ~730 days; 1d goes back decades. FX symbols like EURUSD=X, futures like GC=F."""
+    import yfinance as yf
+    kw = dict(interval=YF_NATIVE[timeframe], progress=False, auto_adjust=True, threads=False)
+    if timeframe == "1h":
+        df = yf.download(symbol, period="730d", **kw)
+    else:
+        df = yf.download(symbol, start=pd.Timestamp(start).strftime("%Y-%m-%d"), end=(pd.Timestamp(end).strftime("%Y-%m-%d") if end else None), **kw)
+    if df.empty:
+        return pd.DataFrame(columns=COLS)
+    if isinstance(df.columns, pd.MultiIndex):
+        df.columns = df.columns.get_level_values(0)
+    df = df.rename(columns=str.lower)[COLS].astype(float)
+    df.index = pd.to_datetime(df.index, utc=True)
+    df = df[(df[["open", "high", "low", "close"]] > 0).all(axis=1)]
+    return df.sort_index()
+
+
+def load_yfinance(symbol: str, timeframe: str, start="2005-01-01", end=None, refresh=True) -> pd.DataFrame:
+    base_tf = RESAMPLE_FROM.get(timeframe, timeframe)
+    if base_tf not in YF_NATIVE:
+        raise ValueError(f"yfinance source supports 1h-derived and 1d-derived timeframes, not {timeframe}")
+    path = CACHE / f"yfinance_{symbol.replace('=', '').replace('^', '')}_{base_tf}.csv"
+    if path.exists() and not refresh:
+        df = pd.read_csv(path, index_col=0, parse_dates=True); df.index = pd.to_datetime(df.index, utc=True)
+    else:
+        fresh = fetch_yfinance(symbol, base_tf, start, end)
+        if path.exists():
+            old = pd.read_csv(path, index_col=0, parse_dates=True); old.index = pd.to_datetime(old.index, utc=True)
+            fresh = pd.concat([old, fresh]).sort_index(); fresh = fresh[~fresh.index.duplicated(keep="last")]
+        path.parent.mkdir(parents=True, exist_ok=True); fresh.to_csv(path); df = fresh
+    df = df[df.index >= pd.Timestamp(_utc(start))]
+    if end:
+        df = df[df.index <= pd.Timestamp(_utc(end))]
+    if timeframe != base_tf:
+        df = resample(df, PANDAS_RULE[timeframe])
+    return df
+
+
+def load_any(exchange: str, product: str, timeframe: str, start, end=None, refresh=True) -> pd.DataFrame:
+    if exchange == "yfinance":
+        return load_yfinance(product, timeframe, start, end, refresh)
+    return load(product, timeframe, start, end, refresh)
+
+
 def load(product: str, timeframe: str, start="2019-01-01", end=None, refresh=True) -> pd.DataFrame:
     """Load OHLCV for any supported timeframe, using and extending the cache.
 

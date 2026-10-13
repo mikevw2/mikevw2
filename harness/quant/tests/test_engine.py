@@ -67,6 +67,14 @@ class EngineTests(unittest.TestCase):
         self.assertEqual(res.trades.iloc[1].entry_time, df.index[6])
 
 
+    def test_trade_from_blocks_entries_before_timestamp(self):
+        df = frame([100] * 6)
+        s = sig(df, [1] * 6, [95] * 6)
+        res = engine.run(df, s, engine.Costs(0, 0), engine.Risk(equity=10000, risk_pct=1, max_leverage=10), trade_from=df.index[3])
+        self.assertEqual(res.trades.iloc[0].entry_time, df.index[3])
+        self.assertTrue((res.equity.iloc[:3] == 10000).all())
+
+
 class IndicatorAndStrategyTests(unittest.TestCase):
     def test_indicators_basic(self):
         s = pd.Series(np.arange(1, 51, dtype=float))

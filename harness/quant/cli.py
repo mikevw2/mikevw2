@@ -35,7 +35,7 @@ def cmd_backtest(args):
             continue
         spec = load_spec(p)
         m = spec["market"]
-        df = data.load(m["product"], m["timeframe"], spec["history"]["start"], spec["history"].get("end"), refresh=not args.no_refresh)
+        df = data.load_any(m.get("exchange", "coinbase"), m["product"], m["timeframe"], spec["history"]["start"], spec["history"].get("end"), refresh=not args.no_refresh)
         costs = engine.Costs(**spec["costs"])
         risk = engine.Risk(**{k: v for k, v in spec["risk"].items() if k in engine.Risk.__dataclass_fields__})
         params = spec.get("params", {})

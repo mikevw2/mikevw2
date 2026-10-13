@@ -42,6 +42,13 @@ rental business, (B) trading. Read `HARNESS_PLAN.md` once per session if you nee
   reasoning, the invalidation, and the review. Report out-of-sample results before in-sample.
 - Journal review is about behavior and process (rule violations, R-multiples, expectancy),
   not about predicting the next trade.
+- Systematic work runs through `quant/` (Python, `.venv`). Backtests report out-of-sample
+  walk-forward results first; the in-sample "best grid point" is never quoted as performance.
+- Broker is TradeLocker, demo environment, credentials only from env vars (`TL_*`).
+  `quant/broker_tradelocker.py` refuses non-demo URLs while `live_enabled` is false.
+- Market data for research comes from Coinbase Exchange public candles cached in `data/cache/`
+  (gitignored). Binance is geo-blocked from this container; ccxt needs `verify=` set to the
+  proxy CA bundle, so prefer `quant/data.py`.
 
 ## Things to avoid
 

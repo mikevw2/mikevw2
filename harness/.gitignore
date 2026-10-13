@@ -6,3 +6,8 @@ data/journal/.broker-log.jsonl
 .env.*
 *.log
 .DS_Store
+.venv/
+data/cache/
+reports/**/2*/
+__pycache__/
+*.pyc

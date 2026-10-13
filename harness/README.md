@@ -20,8 +20,12 @@ HARNESS_PLAN.md         roadmap, inventory, phases
   hooks/                gate scripts: trade-guard, thesis-gate, session-start
   skills/               playbooks, one folder per skill (web/, rental/, trading/)
   agents/               subagent definitions (design-critic, risk-reviewer)
-lib/                    deterministic modules (pure functions, unit tested)
-scripts/                CLIs over lib/ (what hooks, routines, and you call)
+lib/                    deterministic JS modules (pure functions, unit tested)
+scripts/                Node CLIs over lib/ (what hooks, routines, and you call)
+quant/                  Python: data cache, indicators, strategies, backtest engine,
+                        walk-forward, reports, TradeLocker adapter (tests in quant/tests)
+data/strategies/        one YAML spec per strategy/market/timeframe
+reports/                backtest reports; latest.md per strategy is committed
 data/
   risk.yaml             trading rules the hooks enforce
   business.yaml         business facts, service area, tax, bundle rules, policies
@@ -44,6 +48,10 @@ npm run size -- --entry 100 --stop 95 --targets 110,120
 npm run quote -- --items guestbook-phone,flower-wall-white --start 2026-06-12 --end 2026-06-14 --miles 40
 npm run validate -- data/business.yaml data/inventory data/journal
 npm run qa -- https://example.com
+
+python3 -m venv .venv && . .venv/bin/activate && pip install -r requirements.txt
+python -m unittest -q quant.tests.test_engine
+python -m quant.cli backtest data/strategies --no-refresh
 ```
 
 Open this folder as the project root in Claude Code so `.claude/settings.json` hooks apply.

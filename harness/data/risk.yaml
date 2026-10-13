@@ -10,6 +10,17 @@ min_reward_risk: 2.0           # reward:risk to first target
 daily_loss_stop_pct: 3.0       # stop trading for the day past this
 max_trades_per_day: 3
 
+# Systematic / crypto (TradeLocker demo first)
+max_leverage: 2.0              # notional / equity cap used by the backtest engine and paper orders
+default_fee_bps: 20            # assumed per-side cost in backtests
+default_slippage_bps: 5
+paper_requirements:            # a rule must meet all of these before paper trading (see ADR 0005)
+  min_oos_windows: 8
+  min_oos_trades: 100
+  min_oos_expectancy_r: 0.1
+  max_oos_drawdown_pct: 25
+prop_firm_rules: null          # fill when an evaluation account exists: {daily_loss_pct, max_drawdown_pct, min_days}
+
 live_enabled: false            # false = every broker write is blocked unless PAPER=1 / paper:true
 live_confirm_window_min: 10    # when live_enabled, a touch of .claude/CONFIRM_LIVE is valid this long
 broker_tool_prefixes:          # MCP tool-name prefixes treated as broker calls by trade-guard

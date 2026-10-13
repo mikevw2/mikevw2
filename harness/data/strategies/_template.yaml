@@ -1,0 +1,9 @@
+id: strategy-market-timeframe          # also the reports/ folder name
+strategy: ema_trend                    # ema_trend | donchian_breakout | bb_meanrev (quant/strategies.py)
+market: { exchange: coinbase, product: BTC-USD, timeframe: 4h }   # 1h, 2h, 4h, 6h, 12h, 1d
+history: { start: "2020-01-01" }       # end: optional
+params: {}                             # defaults used for the in-sample reference run
+grid: {}                               # lists per param; walk-forward picks per window
+costs: { fee_bps: 20, slippage_bps: 5 }
+risk: { equity: 10000, risk_pct: 1.0, max_leverage: 2.0, trailing: false }
+walkforward: { train_months: 12, test_months: 3, min_trades: 20 }

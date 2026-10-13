@@ -1,0 +1,9 @@
+id: donchian-btc-4h
+strategy: donchian_breakout
+market: { exchange: coinbase, product: BTC-USD, timeframe: 4h }
+history: { start: "2020-01-01" }
+params: { entry: 55, exit: 20, atr_period: 14, atr_mult: 2.0, allow_short: true }
+grid: { entry: [20, 55, 100], exit: [10, 20], atr_mult: [2.0, 3.0] }
+costs: { fee_bps: 20, slippage_bps: 5 }
+risk: { equity: 10000, risk_pct: 1.0, max_leverage: 2.0, trailing: true, atr_mult: 3.0 }
+walkforward: { train_months: 12, test_months: 3, min_trades: 15 }

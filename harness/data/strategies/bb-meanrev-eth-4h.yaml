@@ -1,0 +1,9 @@
+id: bb-meanrev-eth-4h
+strategy: bb_meanrev
+market: { exchange: coinbase, product: ETH-USD, timeframe: 4h }
+history: { start: "2020-01-01" }
+params: { n: 20, k: 2.0, rsi_n: 14, rsi_lo: 30, rsi_hi: 70, trend: 200, atr_period: 14, atr_mult: 2.5, allow_short: true }
+grid: { k: [2.0, 2.5], rsi_lo: [25, 30, 35], atr_mult: [2.0, 3.0] }
+costs: { fee_bps: 20, slippage_bps: 5 }
+risk: { equity: 10000, risk_pct: 1.0, max_leverage: 2.0, trailing: false }
+walkforward: { train_months: 12, test_months: 3, min_trades: 15 }
